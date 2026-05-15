@@ -1,0 +1,35 @@
+{
+  "name": "joblayer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Niche job board for AI and tech roles in the DACH region.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.48.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "next": "^14.2.23",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.3",
+    "resend": "^4.1.2",
+    "stripe": "^17.5.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.23",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
