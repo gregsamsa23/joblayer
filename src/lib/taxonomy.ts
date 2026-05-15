@@ -9,11 +9,11 @@ export const roleTypes = [
 
 export const dachCities = [
   { value: "berlin", label: "Berlin", country: "DE" },
-  { value: "munich", label: "Munich", country: "DE" },
+  { value: "munich", label: "München", country: "DE" },
   { value: "hamburg", label: "Hamburg", country: "DE" },
-  { value: "cologne", label: "Cologne", country: "DE" },
-  { value: "vienna", label: "Vienna", country: "AT" },
-  { value: "zurich", label: "Zurich", country: "CH" },
+  { value: "cologne", label: "Köln", country: "DE" },
+  { value: "vienna", label: "Wien", country: "AT" },
+  { value: "zurich", label: "Zürich", country: "CH" },
   { value: "remote-dach", label: "Remote DACH", country: "DE" },
 ] as const;
 
@@ -49,6 +49,7 @@ export const tagOptions = [
   "Computer Vision",
   "Cloud",
   "Security",
+  "Product",
 ] as const;
 
 export const seoSegments = {

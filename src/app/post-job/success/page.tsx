@@ -11,9 +11,20 @@ export default function PostJobSuccessPage() {
           <p className="mt-4 text-slate-600">
             Wir prüfen die Einreichung und veröffentlichen sie nach Freigabe für 30 Tage auf JobLayer.
           </p>
-          <Link href="/jobs" className="mt-6 inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
-            Zur Jobübersicht
-          </Link>
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href="/jobs"
+              className="inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Zur Jobübersicht
+            </Link>
+            <Link
+              href="/post-job"
+              className="inline-flex rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Weitere Anzeige einreichen
+            </Link>
+          </div>
         </div>
       </section>
     </PageShell>
