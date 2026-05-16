@@ -25,10 +25,11 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link
-            className="hidden rounded-xl border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-white/[0.08] sm:inline-flex"
+            className="inline-flex rounded-xl border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-white/[0.08]"
             href="/jobs"
           >
-            Browse jobs
+            <span className="sm:hidden">Jobs</span>
+            <span className="hidden sm:inline">Browse jobs</span>
           </Link>
           <Link
             className="glow-button rounded-xl px-4 py-2 text-sm font-semibold text-white transition"
