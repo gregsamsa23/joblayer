@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: { roleType?: string; city?: string; workMode?: string; seniority?: string };
+  searchParams: { q?: string; roleType?: string; city?: string; workMode?: string; seniority?: string };
 }) {
   const jobs = await getLiveJobs(searchParams);
 

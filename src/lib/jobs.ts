@@ -12,7 +12,16 @@ function isVisible(job: Job) {
 }
 
 function matchesFilters(job: Job, filters: JobFilters) {
+  const q = filters.q?.trim().toLowerCase();
+  const queryMatches =
+    !q ||
+    [job.title, job.company_name, job.location_city, job.role_type, job.seniority, ...job.tags]
+      .join(" ")
+      .toLowerCase()
+      .includes(q);
+
   return (
+    queryMatches &&
     (!filters.roleType || job.role_type === filters.roleType) &&
     (!filters.city || job.location_city === filters.city) &&
     (!filters.workMode || job.work_mode === filters.workMode) &&
@@ -46,7 +55,8 @@ export async function getLiveJobs(filters: JobFilters = {}) {
     return sampleJobs.filter((job) => isVisible(job) && matchesFilters(job, filters));
   }
 
-  return data as Job[];
+  const jobs = data as Job[];
+  return filters.q ? jobs.filter((job) => matchesFilters(job, filters)) : jobs;
 }
 
 export async function getJobBySlug(slug: string) {

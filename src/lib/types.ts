@@ -39,6 +39,7 @@ export type Job = {
 };
 
 export type JobFilters = {
+  q?: string;
   roleType?: string;
   city?: string;
   workMode?: string;

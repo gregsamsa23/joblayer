@@ -5,24 +5,21 @@ export default function PostJobSuccessPage() {
   return (
     <PageShell>
       <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
-        <div className="rounded-lg border border-emerald-200 bg-white p-8 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Zahlung erhalten</p>
-          <h1 className="mt-3 text-3xl font-semibold text-slate-950">Deine Anzeige wartet auf Freigabe</h1>
-          <p className="mt-4 text-slate-600">
-            Wir prüfen die Einreichung und veröffentlichen sie nach Freigabe für 30 Tage auf JobLayer.
+        <div className="glass-card rounded-[2rem] p-8">
+          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-300">Payment received</p>
+          <h1 className="mt-3 text-4xl font-semibold text-white">Your listing is in review</h1>
+          <p className="mt-4 text-slate-400">
+            We will review the submission and publish it for 30 days after approval.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link
-              href="/jobs"
-              className="inline-flex rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-            >
-              Zur Jobübersicht
+            <Link href="/jobs" className="glow-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold text-white">
+              Browse jobs
             </Link>
             <Link
               href="/post-job"
-              className="inline-flex rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="inline-flex rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white hover:bg-white/[0.1]"
             >
-              Weitere Anzeige einreichen
+              Submit another listing
             </Link>
           </div>
         </div>

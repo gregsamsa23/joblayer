@@ -12,50 +12,59 @@ export function JobCard({ job }: { job: Job }) {
     .toUpperCase();
 
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-md">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+    <article className="group glass-card rounded-2xl p-5 transition duration-300 hover:-translate-y-1 hover:border-violet-400/40 hover:bg-white/[0.075]">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-slate-950 text-sm font-semibold text-white">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-sm font-bold text-white shadow-lg shadow-violet-500/10">
               {initials}
             </div>
             <div className="min-w-0">
+              <p className="text-sm font-medium text-slate-400">{job.company_name}</p>
               <Link
                 href={`/job/${job.slug}`}
-                className="block text-lg font-semibold leading-6 text-slate-950 hover:text-emerald-700"
+                className="mt-1 block text-xl font-semibold leading-7 text-white transition group-hover:text-cyan-100"
               >
                 {job.title}
               </Link>
-              <p className="mt-1 truncate text-sm font-medium text-slate-600">{job.company_name}</p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
-                <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700">{jobLocation(job)}</span>
-                <span className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700">{roleLabel(job.role_type)}</span>
-                <span className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700">
+                {job.work_mode === "remote" ? (
+                  <span className="rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-1 text-cyan-200">
+                    Remote-friendly
+                  </span>
+                ) : null}
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-slate-300">
+                  {jobLocation(job)}
+                </span>
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-slate-300">
+                  {roleLabel(job.role_type)}
+                </span>
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-slate-300">
                   {seniorityLabel(job.seniority)}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             {job.tags.map((tag) => (
-              <span key={tag} className="rounded-md border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600">
+              <span key={tag} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-400">
                 {tag}
               </span>
             ))}
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-row items-center justify-between gap-4 border-t border-slate-100 pt-4 sm:min-w-40 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0">
-          <div className="text-left sm:text-right">
-            <p className="text-sm font-semibold text-slate-950">{salary ?? "Gehalt n. a."}</p>
+        <div className="flex shrink-0 flex-row items-center justify-between gap-4 border-t border-white/10 pt-4 lg:min-w-44 lg:flex-col lg:items-end lg:border-t-0 lg:pt-0">
+          <div className="text-left lg:text-right">
+            <p className="text-sm font-semibold text-white">{salary ?? "Salary n/a"}</p>
             <p className="mt-1 text-xs text-slate-500">{formatPostedDate(job.published_at ?? job.created_at)}</p>
           </div>
           <Link
             href={`/job/${job.slug}`}
-            className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            className="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white transition hover:border-cyan-300/40 hover:bg-cyan-400/10"
           >
-            Details
+            View role
           </Link>
         </div>
       </div>

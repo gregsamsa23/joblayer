@@ -12,109 +12,90 @@ export const metadata: Metadata = {
 export default function AlertsPage({ searchParams }: { searchParams: { success?: string; error?: string } }) {
   return (
     <PageShell>
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_380px] lg:items-center">
+      <section className="px-4 pb-10 pt-8 sm:px-6">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Job-Alert</p>
-            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-              Lass passende AI- und Tech-Jobs zu dir kommen.
+            <p className="text-sm font-semibold uppercase tracking-wide text-violet-300">Weekly AI Jobs Digest</p>
+            <h1 className="mt-3 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl">
+              Let the right <span className="gradient-text">AI career signals</span> find you.
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              JobLayer filtert den DACH-Markt für AI Engineers, Machine-Learning-Profile, Data Teams und moderne
-              Software-Rollen. Du hinterlegst deine Präferenzen, wir bereiten den wöchentlichen Digest vor.
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-400">
+              Track curated AI, machine learning, data and modern tech roles across Germany, Austria and Switzerland.
+              Useful whether you are actively searching or just watching the market.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#alert-form"
-                className="inline-flex h-11 items-center justify-center rounded-md bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-700"
-              >
-                Job-Alert erstellen
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#alert-form" className="glow-button inline-flex h-12 items-center justify-center rounded-2xl px-6 text-sm font-semibold text-white">
+                Get the digest
               </a>
               <Link
                 href="/jobs"
-                className="inline-flex h-11 items-center justify-center rounded-md border border-slate-300 px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-6 text-sm font-semibold text-white hover:bg-white/[0.1]"
               >
-                Jobs ansehen
+                Browse jobs
               </Link>
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Was du bekommst</p>
-            <ul className="mt-5 grid gap-4">
-              <CheckItem title="Relevante Rollen" body="AI, ML, Data, Security, Product und Software Engineering." />
-              <CheckItem title="DACH-Fokus" body="Deutschland, Österreich, Schweiz und Remote-Rollen für die Region." />
-              <CheckItem title="Kein Lärm" body="Kuratierte Updates statt täglicher Massen-E-Mails." />
-            </ul>
+          <aside className="glass-card rounded-[2rem] p-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Digest preview</p>
+            <div className="mt-6 grid gap-3">
+              <DigestItem title="LLM Engineer" meta="Berlin · Hybrid · Python" />
+              <DigestItem title="AI Product Manager" meta="Remote DACH · Senior" />
+              <DigestItem title="Data Scientist" meta="München · MLOps" />
+            </div>
+            <p className="mt-5 text-sm leading-6 text-slate-400">
+              Curated updates, no generic job spam. Automation comes later; the signup flow is already ready.
+            </p>
           </aside>
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-slate-50">
-        <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 sm:px-6 md:grid-cols-3">
-          <RoleExample title="AI Engineer" body="LLM Features, RAG-Systeme, Evaluation, AI-native Produkte." />
-          <RoleExample title="Machine Learning" body="MLOps, Forecasting, Computer Vision, NLP und Datenprodukte." />
-          <RoleExample title="Modern Tech" body="React, TypeScript, Data Platform, Security und Cloud Engineering." />
+      <section className="px-4 py-8 sm:px-6">
+        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+          <RoleExample title="AI Engineering" body="LLM features, RAG systems, evaluation, AI-native products." />
+          <RoleExample title="Machine Learning" body="MLOps, forecasting, computer vision, NLP and data products." />
+          <RoleExample title="Modern Tech" body="React, TypeScript, data platform, security and cloud engineering." />
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_420px]">
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_430px]">
         <div className="grid h-fit gap-4">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-950">Für aktive Suche</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Nutze den Alert, um neue Rollen schnell zu sehen und dich früh zu bewerben.
-            </p>
-          </div>
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-950">Für Marktbeobachtung</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Auch wenn du nicht sofort wechselst, bekommst du ein Gefühl für Gehälter, Stacks und Hiring-Trends.
-            </p>
-          </div>
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-950">Für DACH-Rollen</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Der Fokus bleibt bewusst regional, damit Standort, Sprache, Remote-Modell und Markt besser passen.
-            </p>
-          </div>
+          <InfoBlock title="For active search" body="See relevant roles early and move quickly when a strong signal appears." />
+          <InfoBlock title="For market awareness" body="Follow stacks, salaries and hiring trends even before you are ready to move." />
+          <InfoBlock title="For DACH fit" body="Stay close to Germany, Austria, Switzerland and remote-friendly regional roles." />
         </div>
 
-        <form
-          id="alert-form"
-          action={createCandidateAlert}
-          className="grid h-fit gap-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
-        >
+        <form id="alert-form" action={createCandidateAlert} className="glass-card grid h-fit gap-4 rounded-[2rem] p-6">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Kostenlos anmelden</p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-950">Deine Job-Präferenzen</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Wähle eine Rolle und Stadt als Startpunkt. Weitere Präferenzen können später ergänzt werden.
+            <p className="text-sm font-semibold uppercase tracking-wide text-violet-300">Free signup</p>
+            <h2 className="mt-2 text-3xl font-semibold text-white">Your job preferences</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Pick a role and city as a starting point. More preference depth can be added later.
             </p>
           </div>
 
           {searchParams.success ? (
-            <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
-              Dein Job-Alert wurde gespeichert.
+            <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 p-3 text-sm text-emerald-200">
+              Your job alert was saved.
             </div>
           ) : null}
           {searchParams.error ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-2xl border border-red-300/20 bg-red-400/10 p-3 text-sm text-red-200">
               {decodeURIComponent(searchParams.error)}
             </div>
           ) : null}
 
           <Field label="Name" name="name" required />
-          <Field label="E-Mail" name="email" type="email" required />
-          <Select label="Bevorzugte Rolle" name="preferred_role_type" options={roleTypes} />
-          <Select label="Bevorzugte Stadt" name="preferred_city" options={dachCities} />
+          <Field label="Email" name="email" type="email" required />
+          <Select label="Preferred role" name="preferred_role_type" options={roleTypes} />
+          <Select label="Preferred city" name="preferred_city" options={dachCities} />
 
-          <div className="rounded-md bg-slate-50 p-4 text-sm leading-6 text-slate-600">
-            Im MVP wird deine Anmeldung gespeichert. Der wöchentliche Digest ist vorbereitet und wird später automatisiert.
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-slate-400">
+            MVP note: the signup is stored now. The weekly digest template is ready and automation comes later.
           </div>
 
-          <button className="h-11 rounded-md bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-700">
-            Job-Alert erstellen
+          <button className="glow-button h-12 rounded-2xl px-5 text-sm font-semibold text-white">
+            Create job alert
           </button>
         </form>
       </section>
@@ -122,25 +103,29 @@ export default function AlertsPage({ searchParams }: { searchParams: { success?:
   );
 }
 
-function CheckItem({ title, body }: { title: string; body: string }) {
+function DigestItem({ title, meta }: { title: string; meta: string }) {
   return (
-    <li className="flex gap-3">
-      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
-        ✓
-      </span>
-      <span>
-        <span className="block text-sm font-semibold text-slate-950">{title}</span>
-        <span className="mt-1 block text-sm leading-6 text-slate-600">{body}</span>
-      </span>
-    </li>
+    <div className="rounded-2xl border border-white/10 bg-[#050816]/70 p-4">
+      <p className="text-sm font-semibold text-white">{title}</p>
+      <p className="mt-1 text-xs text-slate-500">{meta}</p>
+    </div>
   );
 }
 
 function RoleExample({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-base font-semibold text-slate-950">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{body}</p>
+    <div className="glass-panel rounded-2xl p-5">
+      <h2 className="text-base font-semibold text-white">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{body}</p>
+    </div>
+  );
+}
+
+function InfoBlock({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="glass-panel rounded-2xl p-5">
+      <h2 className="text-base font-semibold text-white">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{body}</p>
     </div>
   );
 }
@@ -157,14 +142,9 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-slate-700">
+    <label className="grid gap-2 text-sm font-medium text-slate-300">
       {label}
-      <input
-        name={name}
-        type={type}
-        required={required}
-        className="h-11 rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-      />
+      <input name={name} type={type} required={required} className="premium-input h-11 rounded-xl px-3 text-sm" />
     </label>
   );
 }
@@ -179,13 +159,9 @@ function Select({
   options: readonly { value: string; label: string }[];
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-slate-700">
+    <label className="grid gap-2 text-sm font-medium text-slate-300">
       {label}
-      <select
-        name={name}
-        required
-        className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-      >
+      <select name={name} required className="premium-select h-11 rounded-xl px-3 text-sm">
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

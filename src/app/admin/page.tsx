@@ -15,11 +15,11 @@ export const metadata: Metadata = {
 };
 
 const statuses: { value: JobStatus | "all"; label: string }[] = [
-  { value: "all", label: "Alle" },
-  { value: "pending", label: "Prüfung" },
+  { value: "all", label: "All" },
+  { value: "pending", label: "Review" },
   { value: "live", label: "Live" },
-  { value: "expired", label: "Abgelaufen" },
-  { value: "rejected", label: "Abgelehnt" },
+  { value: "expired", label: "Expired" },
+  { value: "rejected", label: "Rejected" },
   { value: "draft", label: "Draft" },
 ];
 
@@ -48,28 +48,25 @@ export default async function AdminPage({
 
   return (
     <PageShell>
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between">
+      <section className="px-4 pb-8 pt-8 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Moderation</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Admin Dashboard</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-              Prüfe bezahlte Anzeigen, veröffentliche passende Rollen und halte die Jobbörse frisch.
+            <p className="text-sm font-semibold uppercase tracking-wide text-violet-300">Moderation cockpit</p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white">Admin Dashboard</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+              Review paid listings, approve strong roles and keep the JobLayer signal clean.
             </p>
           </div>
 
           {supabaseConfigured ? (
             <form action={signOutAdmin}>
-              <button className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-                Ausloggen
+              <button className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white hover:bg-white/[0.1]">
+                Sign out
               </button>
             </form>
           ) : (
-            <Link
-              href="/admin/login"
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
-            >
-              Login vorbereiten
+            <Link href="/admin/login" className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white hover:bg-white/[0.1]">
+              Prepare login
             </Link>
           )}
         </div>
@@ -77,21 +74,20 @@ export default async function AdminPage({
 
       <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         {!supabaseConfigured ? (
-          <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-5 text-amber-900">
-            <h2 className="text-base font-semibold">Demo-Modus ohne Supabase</h2>
-            <p className="mt-2 text-sm leading-6">
-              Der Adminbereich zeigt aktuell Beispieldaten. Sobald die Supabase-Variablen gesetzt sind, wird der Login
-              aktiviert und die Moderation arbeitet mit echten Einreichungen.
+          <div className="mb-6 rounded-2xl border border-amber-300/20 bg-amber-400/10 p-5 text-amber-100">
+            <h2 className="text-base font-semibold">Demo mode without Supabase</h2>
+            <p className="mt-2 text-sm leading-6 text-amber-100/80">
+              The dashboard currently uses sample jobs. Add Supabase environment variables to activate login and real moderation.
             </p>
           </div>
         ) : null}
 
         <div className="grid gap-3 md:grid-cols-5">
-          <StatCard label="Zur Prüfung" value={counts.pending} tone="amber" />
+          <StatCard label="Review" value={counts.pending} tone="amber" />
           <StatCard label="Live" value={counts.live} tone="emerald" />
           <StatCard label="Drafts" value={counts.draft} tone="slate" />
-          <StatCard label="Abgelaufen" value={counts.expired} tone="slate" />
-          <StatCard label="Abgelehnt" value={counts.rejected} tone="red" />
+          <StatCard label="Expired" value={counts.expired} tone="slate" />
+          <StatCard label="Rejected" value={counts.rejected} tone="red" />
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
@@ -100,10 +96,10 @@ export default async function AdminPage({
               key={status.value}
               href={status.value === "all" ? "/admin" : `/admin?status=${status.value}`}
               className={[
-                "rounded-md border px-3 py-2 text-sm font-semibold",
+                "rounded-2xl border px-4 py-2 text-sm font-semibold transition",
                 activeStatus === status.value
-                  ? "border-slate-950 bg-slate-950 text-white"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:text-emerald-700",
+                  ? "border-violet-300/40 bg-violet-400/20 text-white"
+                  : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-cyan-300/40 hover:text-cyan-100",
               ].join(" ")}
             >
               {status.label}
@@ -113,15 +109,11 @@ export default async function AdminPage({
 
         <div className="mt-6 grid gap-4">
           {filteredJobs.length ? (
-            filteredJobs.map((job) => (
-              <AdminJobCard key={job.id} job={job} actionsEnabled={supabaseConfigured} />
-            ))
+            filteredJobs.map((job) => <AdminJobCard key={job.id} job={job} actionsEnabled={supabaseConfigured} />)
           ) : (
-            <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
-              <h2 className="text-lg font-semibold text-slate-950">Keine Anzeigen in dieser Ansicht</h2>
-              <p className="mt-2 text-sm text-slate-600">
-                Sobald bezahlte Einreichungen ankommen, erscheinen sie hier zur Moderation.
-              </p>
+            <div className="glass-card rounded-[2rem] p-10 text-center">
+              <h2 className="text-lg font-semibold text-white">No listings in this view</h2>
+              <p className="mt-2 text-sm text-slate-400">Paid submissions will appear here for moderation.</p>
             </div>
           )}
         </div>
@@ -140,24 +132,16 @@ function countByStatus(jobs: Job[]) {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone: "amber" | "emerald" | "red" | "slate";
-}) {
+function StatCard({ label, value, tone }: { label: string; value: number; tone: "amber" | "emerald" | "red" | "slate" }) {
   const toneClass = {
-    amber: "border-amber-200 bg-amber-50 text-amber-800",
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
-    red: "border-red-200 bg-red-50 text-red-800",
-    slate: "border-slate-200 bg-white text-slate-700",
+    amber: "border-amber-300/20 bg-amber-400/10 text-amber-100",
+    emerald: "border-emerald-300/20 bg-emerald-400/10 text-emerald-100",
+    red: "border-red-300/20 bg-red-400/10 text-red-100",
+    slate: "border-white/10 bg-white/[0.04] text-slate-200",
   }[tone];
 
   return (
-    <div className={`rounded-lg border p-4 shadow-sm ${toneClass}`}>
+    <div className={`rounded-2xl border p-4 ${toneClass}`}>
       <p className="text-sm font-medium">{label}</p>
       <p className="mt-2 text-3xl font-semibold">{value}</p>
     </div>
@@ -168,44 +152,33 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
   const salary = formatSalary(job);
 
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="glass-card rounded-2xl p-5">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={job.status} />
             {job.stripe_checkout_session_id ? (
-              <span className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
-                Stripe vorhanden
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-400">
+                Stripe linked
               </span>
             ) : null}
           </div>
-
-          <h2 className="mt-3 text-lg font-semibold text-slate-950">{job.title}</h2>
-          <p className="mt-1 text-sm text-slate-600">
+          <h2 className="mt-3 text-lg font-semibold text-white">{job.title}</h2>
+          <p className="mt-1 text-sm text-slate-400">
             {job.company_name} · {jobLocation(job)} · {roleLabel(job.role_type)} · {seniorityLabel(job.seniority)}
           </p>
-
-          <dl className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
-            <Detail label="Kontakt" value={job.contact_email} />
-            <Detail label="Erstellt" value={formatPostedDate(job.created_at)} />
-            <Detail label="Gehalt" value={salary ?? "Nicht angegeben"} />
-            <Detail label="Ablauf" value={job.expires_at ? new Date(job.expires_at).toLocaleDateString("de-DE") : "Offen"} />
+          <dl className="mt-4 grid gap-3 text-sm text-slate-400 sm:grid-cols-2 lg:grid-cols-4">
+            <Detail label="Contact" value={job.contact_email} />
+            <Detail label="Created" value={formatPostedDate(job.created_at)} />
+            <Detail label="Salary" value={salary ?? "Not specified"} />
+            <Detail label="Expires" value={job.expires_at ? new Date(job.expires_at).toLocaleDateString("de-DE") : "Open"} />
           </dl>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {job.tags.map((tag) => (
-              <span key={tag} className="rounded-md border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600">
-                {tag}
-              </span>
-            ))}
-          </div>
         </div>
-
         <div className="flex shrink-0 flex-wrap gap-2 lg:max-w-52 lg:justify-end">
-          <StatusButton id={job.id} status="live" label="Freigeben" disabled={!actionsEnabled} primary />
-          <StatusButton id={job.id} status="rejected" label="Ablehnen" disabled={!actionsEnabled} />
-          <StatusButton id={job.id} status="expired" label="Ablaufen" disabled={!actionsEnabled} />
-          <StatusButton id={job.id} status="pending" label="Zur Prüfung" disabled={!actionsEnabled} />
+          <StatusButton id={job.id} status="live" label="Approve" disabled={!actionsEnabled} primary />
+          <StatusButton id={job.id} status="rejected" label="Reject" disabled={!actionsEnabled} />
+          <StatusButton id={job.id} status="expired" label="Expire" disabled={!actionsEnabled} />
+          <StatusButton id={job.id} status="pending" label="Review" disabled={!actionsEnabled} />
         </div>
       </div>
     </article>
@@ -215,22 +188,22 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</dt>
-      <dd className="mt-1 truncate font-medium text-slate-700">{value}</dd>
+      <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
+      <dd className="mt-1 truncate font-medium text-slate-200">{value}</dd>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: JobStatus }) {
   const config = {
-    draft: "bg-slate-100 text-slate-700",
-    pending: "bg-amber-100 text-amber-800",
-    live: "bg-emerald-100 text-emerald-800",
-    expired: "bg-slate-100 text-slate-700",
-    rejected: "bg-red-100 text-red-800",
+    draft: "bg-slate-400/10 text-slate-300",
+    pending: "bg-amber-400/10 text-amber-200",
+    live: "bg-emerald-400/10 text-emerald-200",
+    expired: "bg-slate-400/10 text-slate-300",
+    rejected: "bg-red-400/10 text-red-200",
   }[status];
 
-  return <span className={`rounded-md px-2.5 py-1 text-xs font-semibold uppercase ${config}`}>{status}</span>;
+  return <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${config}`}>{status}</span>;
 }
 
 function StatusButton({
@@ -253,10 +226,10 @@ function StatusButton({
       <button
         disabled={disabled}
         className={[
-          "rounded-md px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50",
+          "rounded-xl px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50",
           primary
-            ? "bg-emerald-600 text-white hover:bg-emerald-700"
-            : "border border-slate-300 text-slate-700 hover:bg-slate-100",
+            ? "glow-button text-white"
+            : "border border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]",
         ].join(" ")}
       >
         {label}
