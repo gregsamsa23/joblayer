@@ -10,11 +10,13 @@ export function JobListingPage({
   filters,
   heading = "AI & Tech Jobs in DACH",
   subheading = "Kuratierte Rollen für AI Engineers, Machine-Learning-Teams und moderne Tech-Organisationen in Deutschland, Österreich und der Schweiz.",
+  seoContent,
 }: {
   jobs: Job[];
   filters: JobFilters;
   heading?: string;
   subheading?: string;
+  seoContent?: ReactNode;
 }) {
   return (
     <PageShell>
@@ -22,9 +24,7 @@ export function JobListingPage({
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1fr_360px] lg:items-end">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">JobLayer</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-              {heading}
-            </h1>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{heading}</h1>
             <p className="mt-4 text-lg leading-8 text-slate-600">{subheading}</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -60,13 +60,15 @@ export function JobListingPage({
           <JobFiltersForm filters={filters} />
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             <QuickLink href="/jobs/berlin">Berlin</QuickLink>
-            <QuickLink href="/jobs/munich">Munich</QuickLink>
+            <QuickLink href="/jobs/munich">München</QuickLink>
             <QuickLink href="/jobs/remote">Remote</QuickLink>
             <QuickLink href="/jobs/machine-learning">Machine Learning</QuickLink>
             <QuickLink href="/jobs/ai-engineer">AI Engineer</QuickLink>
           </div>
         </div>
       </section>
+
+      {seoContent}
 
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_300px]">
         <div>
