@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getImportPreviewJob } from "@/lib/import-preview";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -48,6 +49,37 @@ export async function updateJobStatus(formData: FormData) {
       : { status };
 
   await supabase.from("jobs").update(update).eq("id", id);
+  revalidatePath("/admin");
+  revalidatePath("/jobs");
+}
+
+export async function importPreviewJob(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const job = getImportPreviewJob(id);
+  const supabase = createSupabaseAdminClient();
+
+  if (!supabase || !job) {
+    return;
+  }
+
+  const pendingJob = {
+    ...job,
+    id: undefined,
+    status: "pending",
+    published_at: null,
+    expires_at: null,
+    stripe_checkout_session_id: null,
+    stripe_payment_intent_id: null,
+    stripe_customer_email: null,
+    admin_notes: [
+      job.admin_notes,
+      "Imported from DAX preview. Review title, location, tags and summary before approval.",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  };
+
+  await supabase.from("jobs").upsert(pendingJob, { onConflict: "slug", ignoreDuplicates: true });
   revalidatePath("/admin");
   revalidatePath("/jobs");
 }
