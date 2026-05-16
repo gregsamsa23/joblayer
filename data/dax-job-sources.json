@@ -1,0 +1,44 @@
+[
+  {
+    "companyName": "SAP",
+    "companyKey": "sap",
+    "sourceUrl": "https://jobs.sap.com/go/AI-Jobs/9154301/",
+    "sourceType": "successfactors-list",
+    "notes": "Official SAP AI jobs category page."
+  },
+  {
+    "companyName": "SAP",
+    "companyKey": "sap-germany-ai",
+    "sourceUrl": "https://jobs.sap.com/go/Artificial_Intelligence/9536501/?q=&sortColumn=sort_location&sortDirection=asc",
+    "sourceType": "successfactors-list",
+    "notes": "Official SAP artificial intelligence category, sorted by location."
+  },
+  {
+    "companyName": "Siemens",
+    "companyKey": "siemens-ai",
+    "sourceUrl": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence&location=Germany",
+    "sourceType": "generic-html",
+    "notes": "Official Siemens careers search for AI roles in Germany."
+  },
+  {
+    "companyName": "Deutsche Telekom",
+    "companyKey": "telekom-ai",
+    "sourceUrl": "https://www.telekom.com/en/careers/jobsearch?query=artificial%20intelligence&country=Germany",
+    "sourceType": "generic-html",
+    "notes": "Official Deutsche Telekom careers search."
+  },
+  {
+    "companyName": "BMW Group",
+    "companyKey": "bmw-ai",
+    "sourceUrl": "https://www.bmwgroup.jobs/de/de/jobfinder.html?query=artificial%20intelligence",
+    "sourceType": "generic-html",
+    "notes": "Official BMW Group job finder search."
+  },
+  {
+    "companyName": "Infineon",
+    "companyKey": "infineon-ai",
+    "sourceUrl": "https://jobs.infineon.com/careers?query=artificial%20intelligence",
+    "sourceType": "generic-html",
+    "notes": "Official Infineon careers search."
+  }
+]

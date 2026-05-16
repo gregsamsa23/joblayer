@@ -1,6 +1,7 @@
 import type { Job } from "./types";
+import importedJobs from "./imported-jobs.generated.json";
 
-export const sampleJobs: Job[] = [
+const handcraftedSampleJobs: Job[] = [
   {
     id: "sample-1",
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
@@ -202,3 +203,5 @@ export const sampleJobs: Job[] = [
     expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 22).toISOString(),
   },
 ];
+
+export const sampleJobs: Job[] = [...(importedJobs as Job[]), ...handcraftedSampleJobs];

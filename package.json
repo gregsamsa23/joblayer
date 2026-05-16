@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "import:dax-jobs": "node scripts/import-dax-jobs.mjs",
     "start": "next start",
     "lint": "eslint"
   },
