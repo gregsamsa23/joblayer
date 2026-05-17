@@ -292,6 +292,12 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
           </dl>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 lg:max-w-52 lg:justify-end">
+          <Link
+            href={`/admin/jobs/${job.id}/edit`}
+            className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-300/15"
+          >
+            Edit
+          </Link>
           <StatusButton id={job.id} status="live" label="Approve" disabled={!actionsEnabled} primary />
           <StatusButton id={job.id} status="rejected" label="Reject" disabled={!actionsEnabled} />
           <StatusButton id={job.id} status="expired" label="Expire" disabled={!actionsEnabled} />

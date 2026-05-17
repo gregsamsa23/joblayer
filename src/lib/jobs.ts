@@ -107,6 +107,24 @@ export async function getAdminJobs() {
   return data as Job[];
 }
 
+export async function getAdminJobById(id: string) {
+  noStore();
+  const supabase = createSupabaseAdminClient();
+
+  if (!supabase) {
+    return sampleJobs.find((job) => job.id === id) ?? null;
+  }
+
+  const { data, error } = await supabase.from("jobs").select("*").eq("id", id).maybeSingle();
+
+  if (error) {
+    console.error("Failed to load admin job", error);
+    return null;
+  }
+
+  return data as Job | null;
+}
+
 export function countryForCity(city: string) {
   return dachCities.find((item) => item.value === city)?.country ?? "DE";
 }

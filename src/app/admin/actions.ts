@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getImportPreviewJob } from "@/lib/import-preview";
+import { countryForCity } from "@/lib/jobs";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { parseJobForm } from "@/lib/validation";
 
 export async function signInAdmin(formData: FormData) {
   const supabase = createSupabaseServerClient();
@@ -82,4 +84,41 @@ export async function importPreviewJob(formData: FormData) {
   await supabase.from("jobs").upsert(pendingJob, { onConflict: "slug", ignoreDuplicates: true });
   revalidatePath("/admin");
   revalidatePath("/jobs");
+}
+
+export async function updateJobDetails(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const supabase = createSupabaseAdminClient();
+
+  if (!supabase || !id) {
+    return;
+  }
+
+  try {
+    const job = parseJobForm(formData);
+    const adminNotes = String(formData.get("admin_notes") ?? "").trim();
+
+    const update = {
+      ...job,
+      country: countryForCity(job.location_city),
+      company_logo_url: job.company_logo_url || null,
+      salary_min: job.salary_min || null,
+      salary_max: job.salary_max || null,
+      admin_notes: adminNotes || null,
+    };
+
+    const { error } = await supabase.from("jobs").update(update).eq("id", id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Der Job konnte nicht gespeichert werden.";
+    redirect(`/admin/jobs/${id}/edit?error=${encodeURIComponent(message)}`);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/jobs/${id}/edit`);
+  revalidatePath("/jobs");
+  redirect(`/admin/jobs/${id}/edit?saved=1`);
 }
