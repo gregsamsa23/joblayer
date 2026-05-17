@@ -7,7 +7,6 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const sourcesPath = path.join(rootDir, "data", "dax-job-sources.json");
 const previewPath = path.join(rootDir, "imports", "dax-job-import-preview.json");
-const generatedJobsPath = path.join(rootDir, "src", "lib", "imported-jobs.generated.json");
 
 const maxJobsPerSource = Number(readArg("--max-per-source") ?? 12);
 const maxTotalJobs = Number(readArg("--max-total") ?? 30);
@@ -334,7 +333,7 @@ function toPreviewRecord(candidate, source) {
     id: `import-${sourceId}`,
     created_at: now,
     slug: slugify(`${title}-${source.companyName}-${sourceId}`),
-    status: "live",
+    status: "pending",
     title,
     company_name: source.companyName,
     company_logo_url: null,
@@ -355,8 +354,8 @@ function toPreviewRecord(candidate, source) {
     salary_max: null,
     salary_currency: city.country === "CH" ? "CHF" : "EUR",
     tags,
-    published_at: now,
-    expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+    published_at: null,
+    expires_at: null,
     admin_notes: `Import preview from ${source.companyName}. Source: ${candidate.url}`,
   };
 
@@ -413,7 +412,6 @@ async function run() {
   }
 
   const uniqueRecords = dedupePreviewRecords(previewRecords).slice(0, maxTotalJobs);
-  const generatedJobs = uniqueRecords.map((record) => record.job);
 
   await mkdir(path.dirname(previewPath), { recursive: true });
   await writeFile(
@@ -434,11 +432,8 @@ async function run() {
     )}\n`,
   );
 
-  await writeFile(generatedJobsPath, `${JSON.stringify(generatedJobs, null, 2)}\n`);
-
-  console.log(`Imported ${generatedJobs.length} preview jobs.`);
+  console.log(`Imported ${uniqueRecords.length} preview jobs.`);
   console.log(`Preview: ${path.relative(rootDir, previewPath)}`);
-  console.log(`Local UI data: ${path.relative(rootDir, generatedJobsPath)}`);
 }
 
 function dedupePreviewRecords(records) {

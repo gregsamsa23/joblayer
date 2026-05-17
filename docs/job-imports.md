@@ -1,11 +1,17 @@
 # Job Import Prototype
 
-JobLayer can test external job imports without writing directly to Supabase.
+JobLayer can test external job imports without writing directly to the public job board.
 
-The importer reads official employer career pages from `data/dax-job-sources.json`, extracts job-link metadata, filters for AI and tech roles in DACH, and writes two files:
+The importer reads official employer career pages from `data/dax-job-sources.json`, extracts job-link metadata, filters for AI and tech roles in DACH, and writes one review file:
 
 - `imports/dax-job-import-preview.json`: editorial review data with source metadata.
-- `src/lib/imported-jobs.generated.json`: normalized jobs that appear in the local fallback job overview when Supabase is not configured.
+
+The public job overview must not read imported jobs directly. Imported roles only become public after this flow:
+
+1. Import preview is generated.
+2. Admin imports a promising role into Supabase as `pending`.
+3. Admin reviews and approves the role.
+4. Only approved `live` jobs appear publicly.
 
 Run:
 
