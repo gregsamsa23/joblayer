@@ -15,3 +15,7 @@ export function hasStripeConfig() {
 export function hasResendConfig() {
   return Boolean(process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL);
 }
+
+export function hasCronConfig() {
+  return Boolean(process.env.CRON_SECRET);
+}
