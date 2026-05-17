@@ -10,6 +10,7 @@ const previewPath = path.join(rootDir, "imports", "dax-job-import-preview.json")
 
 const maxJobsPerSource = Number(readArg("--max-per-source") ?? 12);
 const maxTotalJobs = Number(readArg("--max-total") ?? 30);
+const requestRetries = Number(readArg("--request-retries") ?? 3);
 
 const relevantTerms = [
   "ai",
@@ -47,6 +48,9 @@ const excludeTerms = [
   "ausbildung",
   "sales",
   "account executive",
+  "quality manager",
+  "wareneingangsprüfung",
+  "wareneingangspruefung",
   "skip to",
   "français",
   "nederlands",
@@ -55,6 +59,7 @@ const excludeTerms = [
   "deutsch",
   "search jobs",
   "job search",
+  "mehr erfahren",
   "privacy",
   "terms",
 ];
@@ -85,7 +90,7 @@ const nonDachLocationTerms = [
 
 const cityPatterns = [
   { value: "berlin", country: "DE", terms: ["berlin"] },
-  { value: "munich", country: "DE", terms: ["munich", "muenchen", "münchen", "garching"] },
+  { value: "munich", country: "DE", terms: ["munich", "muenchen", "münchen", "garching", "erlangen"] },
   { value: "hamburg", country: "DE", terms: ["hamburg"] },
   { value: "cologne", country: "DE", terms: ["cologne", "koeln", "köln"] },
   { value: "vienna", country: "AT", terms: ["vienna", "wien"] },
@@ -93,7 +98,24 @@ const cityPatterns = [
   {
     value: "remote-dach",
     country: "DE",
-    terms: ["remote dach", "germany", "deutschland", "austria", "switzerland", "walldorf", "potsdam", "st. leon-rot"],
+    terms: [
+      "remote dach",
+      "germany",
+      "deutschland",
+      "austria",
+      "switzerland",
+      "walldorf",
+      "potsdam",
+      "st. leon-rot",
+      "hannover",
+      "nuremberg",
+      "nuernberg",
+      "nürnberg",
+      "frankfurt",
+      "karlsruhe",
+      "leipzig",
+      "stuttgart",
+    ],
   },
 ];
 
@@ -212,8 +234,8 @@ function inferRoleType(context) {
   if (/(machine learning|ml engineer|mlops|computer vision|nlp|data scientist)/.test(lower)) return "machine-learning";
   if (/(data engineer|data platform|analytics engineer|data architect)/.test(lower)) return "data-engineering";
   if (/(security|cybersecurity|privacy)/.test(lower)) return "security";
-  if (/(product manager|product owner|product designer|ux)/.test(lower)) return "product";
   if (/(ai|artificial intelligence|genai|generative ai|llm|agentic|knowledge graph)/.test(lower)) return "ai-engineer";
+  if (/(product manager|product owner|product designer|ux)/.test(lower)) return "product";
   return "software-engineering";
 }
 
@@ -252,7 +274,7 @@ function scoreCandidate(candidate) {
   const haystack = `${candidate.title} ${candidate.context}`;
   const relevance = relevantTerms.filter((term) => haystack.toLowerCase().includes(term)).length;
   const dach = hasDachSignal(candidate);
-  const excluded = containsAny(haystack, excludeTerms);
+  const excluded = containsAny(candidate.title, excludeTerms);
   const nonDach = hasNonDachSignal(candidate);
 
   return {
@@ -261,6 +283,101 @@ function scoreCandidate(candidate) {
     dach,
     excluded,
     nonDach,
+  };
+}
+
+async function getCandidatesForSource(source) {
+  if (source.sourceType === "siemens-search") {
+    return getSiemensCandidates(source);
+  }
+
+  const html = await fetchSource(source.sourceUrl);
+  return extractAnchorCandidates(html, source);
+}
+
+async function getSiemensCandidates(source) {
+  const searchUrls = source.searchUrls?.length ? source.searchUrls : [source.sourceUrl];
+  const listCandidates = [];
+
+  for (const detailUrl of source.detailUrls ?? []) {
+    try {
+      const detailHtml = await fetchSource(detailUrl);
+      listCandidates.push({
+        ...parseSiemensDetailPage(detailHtml, {
+        title: `Siemens role ${detailUrl.split("/").filter(Boolean).at(-1)}`,
+        url: detailUrl,
+        context: detailUrl,
+        }),
+        detailLoaded: true,
+      });
+    } catch {
+      // Keep going if an individual Siemens detail page is temporarily unavailable.
+    }
+  }
+
+  for (const searchUrl of searchUrls) {
+    try {
+      const html = await fetchSource(searchUrl);
+      listCandidates.push(...extractSiemensListCandidates(html, searchUrl));
+    } catch {
+      // Siemens search pages occasionally reject individual requests; detail URLs still carry the import.
+    }
+  }
+
+  const uniqueListCandidates = dedupeCandidates(listCandidates).slice(0, Math.max(maxJobsPerSource * 3, 18));
+  const detailCandidates = [];
+
+  for (const candidate of uniqueListCandidates) {
+    if (candidate.detailLoaded) {
+      detailCandidates.push(candidate);
+      continue;
+    }
+
+    try {
+      const detailHtml = await fetchSource(candidate.url);
+      detailCandidates.push(parseSiemensDetailPage(detailHtml, candidate));
+    } catch {
+      detailCandidates.push(candidate);
+    }
+  }
+
+  return detailCandidates;
+}
+
+function extractSiemensListCandidates(html, sourceUrl) {
+  const cleanHtml = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ");
+  const articles = [...cleanHtml.matchAll(/<article\b[\s\S]*?<\/article>/gi)].map((match) => match[0]);
+
+  return articles
+    .map((match) => {
+      const anchor = match.match(/<a\b[^>]*href=["']([^"']*\/externaljobs\/JobDetail\/\d+[^"']*)["'][^>]*>([\s\S]*?)<\/a>/i);
+      if (!anchor) return null;
+
+      const [, href, body] = anchor;
+      const title = stripTags(body);
+      const url = absolutizeUrl(href, sourceUrl);
+      const context = stripTags(match);
+
+      return {
+        title,
+        url,
+        context,
+      };
+    })
+    .filter(Boolean)
+    .filter((candidate) => candidate.url && candidate.title.length >= 8)
+    .filter((candidate) => !["learn more", "mehr erfahren", "email", "whatsapp", "facebook", "wechat"].includes(candidate.title.toLowerCase()))
+    .filter((candidate) => !containsAny(candidate.title, excludeTerms));
+}
+
+function parseSiemensDetailPage(html, candidate) {
+  const cleanHtml = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ");
+  const h1 = cleanHtml.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+
+  return {
+    title: normalizeWhitespace(h1 ? stripTags(h1[1]) : candidate.title),
+    url: candidate.url,
+    context: stripTags(cleanHtml),
   };
 }
 
@@ -307,18 +424,37 @@ function dedupeCandidates(candidates) {
 }
 
 async function fetchSource(source) {
-  const response = await fetch(source.sourceUrl, {
-    headers: {
-      "accept": "text/html,application/xhtml+xml",
-      "user-agent": "JobLayerImportPreview/0.1 (+https://joblayer.de; editorial preview)",
-    },
-  });
+  const url = typeof source === "string" ? source : source.sourceUrl;
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status} ${response.statusText}`);
+  for (let attempt = 1; attempt <= requestRetries; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "accept": "text/html,application/xhtml+xml",
+          "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+          "user-agent": "JobLayerImportPreview/0.1 (+https://joblayer.de; editorial preview)",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      }
+
+      return response.text();
+    } catch (error) {
+      if (attempt === requestRetries) {
+        throw error;
+      }
+
+      await sleep(750 * attempt);
+    }
   }
+}
 
-  return response.text();
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 function toPreviewRecord(candidate, source) {
@@ -385,8 +521,7 @@ async function run() {
 
   for (const source of sources) {
     try {
-      const html = await fetchSource(source);
-      const candidates = dedupeCandidates(extractAnchorCandidates(html, source))
+      const candidates = dedupeCandidates(await getCandidatesForSource(source))
         .map((candidate) => ({ candidate, score: scoreCandidate(candidate) }))
         .filter(({ score }) => score.score >= 2 && score.relevance > 0 && score.dach && !score.excluded && !score.nonDach)
         .sort((left, right) => right.score.score - left.score.score)

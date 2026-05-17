@@ -16,9 +16,26 @@
   {
     "companyName": "Siemens",
     "companyKey": "siemens-ai",
-    "sourceUrl": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence&location=Germany",
-    "sourceType": "generic-html",
-    "notes": "Official Siemens careers search for AI roles in Germany."
+    "sourceUrl": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
+    "sourceType": "siemens-search",
+    "searchUrls": [
+      "https://jobs.siemens.com/de_DE/externaljobs/SearchJobs/?42386=%5B812132%5D&42386_format=17546&listFilterMode=1&folderRecordsPerPage=25&keyword=Artificial%20Intelligence",
+      "https://jobs.siemens.com/de_DE/externaljobs/SearchJobs/?42386=%5B812132%5D&42386_format=17546&listFilterMode=1&folderRecordsPerPage=25&keyword=Machine%20Learning",
+      "https://jobs.siemens.com/de_DE/externaljobs/SearchJobs/?42386=%5B812132%5D&42386_format=17546&listFilterMode=1&folderRecordsPerPage=25&keyword=Data%20Science",
+      "https://jobs.siemens.com/de_DE/externaljobs/SearchJobs/?42386=%5B812132%5D&42386_format=17546&listFilterMode=1&folderRecordsPerPage=25&keyword=LLM",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Germany%20Artificial%20Intelligence",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Machine%20Learning",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Germany%20Machine%20Learning",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Data%20Science",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Germany%20Data%20Science",
+      "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=LLM"
+    ],
+    "detailUrls": [
+      "https://jobs.siemens.com/en_US/externaljobs/JobDetail/479910",
+      "https://jobs.siemens.com/en_US/externaljobs/JobDetail/482140"
+    ],
+    "notes": "Official Siemens careers searches. Adapter follows JobDetail links and filters on detail-page metadata."
   },
   {
     "companyName": "Deutsche Telekom",

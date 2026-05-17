@@ -27,6 +27,11 @@ Important guardrails:
 - Review imported jobs before publishing them in Supabase.
 - If a company exposes a stable API, prefer that over HTML parsing.
 
+Source notes:
+
+- SAP uses SuccessFactors category/list pages.
+- Siemens uses a dedicated adapter: Germany-filtered Siemens search pages are parsed by individual result cards, and selected official JobDetail URLs can be used as stable seed inputs when the Siemens search UI is slow or broad.
+
 For production, add source metadata columns to Supabase before inserting imported jobs:
 
 - `source_company`

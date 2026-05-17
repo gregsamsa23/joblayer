@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T05:50:12.193Z",
+  "generated_at": "2026-05-17T09:32:36.768Z",
   "guardrails": [
     "Official employer career pages only.",
     "Imported descriptions are placeholders; do not copy full external job text.",
@@ -20,9 +20,9 @@
     },
     {
       "company": "Siemens",
-      "source_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence&location=Germany",
+      "source_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
       "status": "ok",
-      "imported_candidates": 0
+      "imported_candidates": 1
     },
     {
       "company": "Deutsche Telekom",
@@ -59,7 +59,7 @@
       },
       "job": {
         "id": "import-uo1ne2",
-        "created_at": "2026-05-17T05:50:08.567Z",
+        "created_at": "2026-05-17T09:31:54.003Z",
         "slug": "cloud-solution-architect-f-m-d-for-agentic-ai-focus-finance-sap-uo1ne2",
         "status": "pending",
         "title": "Cloud Solution Architect (f/m/d) for Agentic AI - Focus Finance",
@@ -100,7 +100,7 @@
       },
       "job": {
         "id": "import-ci2j1z",
-        "created_at": "2026-05-17T05:50:08.574Z",
+        "created_at": "2026-05-17T09:31:54.005Z",
         "slug": "sap-ai-engineering-architect-f-m-d-sap-ci2j1z",
         "status": "pending",
         "title": "SAP AI Engineering Architect (f/m/d)",
@@ -139,7 +139,7 @@
       },
       "job": {
         "id": "import-c42fb6",
-        "created_at": "2026-05-17T05:50:08.574Z",
+        "created_at": "2026-05-17T09:31:54.005Z",
         "slug": "principal-btp-ai-development-consultant-f-m-d-sap-c42fb6",
         "status": "pending",
         "title": "Principal BTP AI Development Consultant (f/m/d)",
@@ -178,7 +178,7 @@
       },
       "job": {
         "id": "import-2eu5rd",
-        "created_at": "2026-05-17T05:50:08.574Z",
+        "created_at": "2026-05-17T09:31:54.005Z",
         "slug": "principal-lead-sap-ai-architect-f-m-d-sap-2eu5rd",
         "status": "pending",
         "title": "Principal/Lead SAP AI Architect (f/m/d)",
@@ -217,7 +217,7 @@
       },
       "job": {
         "id": "import-z88elw",
-        "created_at": "2026-05-17T05:50:08.574Z",
+        "created_at": "2026-05-17T09:31:54.005Z",
         "slug": "principal-lead-sap-ai-engineer-f-m-d-sap-z88elw",
         "status": "pending",
         "title": "Principal/Lead SAP AI Engineer (f/m/d)",
@@ -256,7 +256,7 @@
       },
       "job": {
         "id": "import-pkh7pe",
-        "created_at": "2026-05-17T05:50:08.574Z",
+        "created_at": "2026-05-17T09:31:54.005Z",
         "slug": "principal-software-architect-m-f-d-sap-knowledge-graph-sap-pkh7pe",
         "status": "pending",
         "title": "Principal Software Architect (m/f/d) | SAP Knowledge Graph",
@@ -278,6 +278,47 @@
         "published_at": null,
         "expires_at": null,
         "admin_notes": "Import preview from SAP. Source: https://jobs.sap.com/job/Walldorf-Principal-Software-Architect-%28mfd%29-SAP-Knowledge-Graph-69190/1381607033/"
+      }
+    },
+    {
+      "source_company": "Siemens",
+      "source_key": "siemens-ai",
+      "source_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
+      "apply_url": "https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161",
+      "recommended_status": "pending",
+      "confidence": "high",
+      "match_reason": {
+        "relevance_terms": 2,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-1eyypbk",
+        "created_at": "2026-05-17T09:32:36.190Z",
+        "slug": "senior-power-automation-expert-f-m-d-for-ai-enabled-engineering-siemens-1eyypbk",
+        "status": "pending",
+        "title": "Senior Power Automation Expert (f/m/d) for AI-enabled Engineering",
+        "company_name": "Siemens",
+        "company_logo_url": null,
+        "location_city": "munich",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "contract",
+        "role_type": "ai-engineer",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Siemens erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "RAG"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Siemens. Source: https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161"
       }
     }
   ]
