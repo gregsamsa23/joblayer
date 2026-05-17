@@ -73,6 +73,7 @@ export default async function AdminJobEditPage({
               <Fact label="Status" value={job.status} />
               <Fact label="Created" value={formatPostedDate(job.created_at)} />
               <Fact label="Apply URL" value={job.apply_url} href={job.apply_url} />
+              {job.source_url ? <Fact label="Source" value={job.source_company ?? "External"} href={job.source_url} /> : null}
             </dl>
           </aside>
         </div>

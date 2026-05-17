@@ -27,7 +27,7 @@ const statuses: { value: JobStatus | "all"; label: string }[] = [
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { status?: JobStatus | "all" };
+  searchParams: { status?: JobStatus | "all"; error?: string };
 }) {
   const supabaseConfigured = hasSupabaseConfig();
 
@@ -47,8 +47,11 @@ export default async function AdminPage({
   const filteredJobs = activeStatus === "all" ? jobs : jobs.filter((job) => job.status === activeStatus);
   const counts = countByStatus(jobs);
   const existingApplyUrls = new Set(jobs.map((job) => job.apply_url));
+  const existingSourceUrls = new Set(jobs.map((job) => job.source_url).filter(Boolean));
   const importJobs = jobImportPreview.jobs;
-  const importedCount = supabaseConfigured ? importJobs.filter((record) => existingApplyUrls.has(record.apply_url)).length : 0;
+  const importedCount = supabaseConfigured
+    ? importJobs.filter((record) => existingApplyUrls.has(record.apply_url) || existingSourceUrls.has(record.apply_url)).length
+    : 0;
 
   return (
     <PageShell>
@@ -86,6 +89,12 @@ export default async function AdminPage({
           </div>
         ) : null}
 
+        {searchParams.error ? (
+          <div className="mb-6 rounded-2xl border border-red-300/20 bg-red-400/10 p-5 text-sm leading-6 text-red-100">
+            {decodeURIComponent(searchParams.error)}
+          </div>
+        ) : null}
+
         <div className="grid gap-3 md:grid-cols-5">
           <StatCard label="Review" value={counts.pending} tone="amber" />
           <StatCard label="Live" value={counts.live} tone="emerald" />
@@ -116,7 +125,7 @@ export default async function AdminPage({
                 <ImportPreviewCard
                   key={record.job.id}
                   record={record}
-                  alreadyImported={supabaseConfigured && existingApplyUrls.has(record.apply_url)}
+                  alreadyImported={supabaseConfigured && (existingApplyUrls.has(record.apply_url) || existingSourceUrls.has(record.apply_url))}
                   actionsEnabled={supabaseConfigured}
                 />
               ))
@@ -274,6 +283,11 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={job.status} />
+            {job.source_company ? (
+              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+                Imported from {job.source_company}
+              </span>
+            ) : null}
             {job.stripe_checkout_session_id ? (
               <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-400">
                 Stripe linked
@@ -289,6 +303,7 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
             <Detail label="Created" value={formatPostedDate(job.created_at)} />
             <Detail label="Salary" value={salary ?? "Not specified"} />
             <Detail label="Expires" value={job.expires_at ? new Date(job.expires_at).toLocaleDateString("de-DE") : "Open"} />
+            {job.source_url ? <Detail label="Source" value={job.source_company ?? "External"} href={job.source_url} /> : null}
           </dl>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2 lg:max-w-52 lg:justify-end">
@@ -308,11 +323,19 @@ function AdminJobCard({ job, actionsEnabled }: { job: Job; actionsEnabled: boole
   );
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Detail({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
     <div>
       <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className="mt-1 truncate font-medium text-slate-200">{value}</dd>
+      <dd className="mt-1 truncate font-medium text-slate-200">
+        {href ? (
+          <a href={href} target="_blank" rel="noreferrer" className="text-cyan-200 hover:text-cyan-100">
+            {value}
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   );
 }

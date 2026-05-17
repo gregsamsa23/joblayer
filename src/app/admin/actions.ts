@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getImportPreviewJob } from "@/lib/import-preview";
+import { getImportPreviewRecord } from "@/lib/import-preview";
 import { countryForCity } from "@/lib/jobs";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -57,10 +57,35 @@ export async function updateJobStatus(formData: FormData) {
 
 export async function importPreviewJob(formData: FormData) {
   const id = String(formData.get("id") ?? "");
-  const job = getImportPreviewJob(id);
+  const record = getImportPreviewRecord(id);
+  const job = record?.job ?? null;
   const supabase = createSupabaseAdminClient();
 
-  if (!supabase || !job) {
+  if (!supabase || !record || !job) {
+    return;
+  }
+
+  const { data: existingByApplyUrl } = await supabase
+    .from("jobs")
+    .select("id")
+    .eq("apply_url", record.apply_url)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingByApplyUrl) {
+    revalidatePath("/admin");
+    return;
+  }
+
+  const { data: existingBySourceUrl } = await supabase
+    .from("jobs")
+    .select("id")
+    .eq("source_url", record.apply_url)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingBySourceUrl) {
+    revalidatePath("/admin");
     return;
   }
 
@@ -68,6 +93,10 @@ export async function importPreviewJob(formData: FormData) {
     ...job,
     id: undefined,
     status: "pending",
+    source_company: record.source_company,
+    source_url: record.apply_url,
+    source_external_id: job.id,
+    imported_at: new Date().toISOString(),
     published_at: null,
     expires_at: null,
     stripe_checkout_session_id: null,
@@ -81,7 +110,12 @@ export async function importPreviewJob(formData: FormData) {
       .join("\n"),
   };
 
-  await supabase.from("jobs").upsert(pendingJob, { onConflict: "slug", ignoreDuplicates: true });
+  const { error } = await supabase.from("jobs").insert(pendingJob);
+
+  if (error) {
+    redirect(`/admin?error=${encodeURIComponent(error.message)}`);
+  }
+
   revalidatePath("/admin");
   revalidatePath("/jobs");
 }

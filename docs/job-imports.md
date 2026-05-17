@@ -33,4 +33,5 @@ For production, add source metadata columns to Supabase before inserting importe
 - `source_url`
 - `source_external_id`
 - `imported_at`
-- `import_status`
+
+These fields are included in `supabase/migrations/002_job_source_tracking.sql`.

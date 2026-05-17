@@ -32,6 +32,10 @@ export type ImportPreview = {
 
 export const jobImportPreview = preview as ImportPreview;
 
+export function getImportPreviewRecord(jobId: string) {
+  return jobImportPreview.jobs.find((record) => record.job.id === jobId) ?? null;
+}
+
 export function getImportPreviewJob(jobId: string) {
-  return jobImportPreview.jobs.find((record) => record.job.id === jobId)?.job ?? null;
+  return getImportPreviewRecord(jobId)?.job ?? null;
 }

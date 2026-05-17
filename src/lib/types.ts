@@ -33,6 +33,10 @@ export type Job = {
   stripe_checkout_session_id?: string | null;
   stripe_payment_intent_id?: string | null;
   stripe_customer_email?: string | null;
+  source_company?: string | null;
+  source_url?: string | null;
+  source_external_id?: string | null;
+  imported_at?: string | null;
   published_at?: string | null;
   expires_at?: string | null;
   admin_notes?: string | null;

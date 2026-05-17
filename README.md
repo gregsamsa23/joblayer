@@ -89,7 +89,7 @@ Production values:
 
 1. Create a Supabase project.
 2. Open SQL Editor.
-3. Run `supabase/migrations/001_initial_schema.sql`.
+3. Run every SQL file in `supabase/migrations` in numeric order.
 4. Create the first admin user in Supabase Auth.
 5. Add the Supabase env vars locally and in Vercel.
 

@@ -8,7 +8,7 @@ Use this checklist when moving from local MVP to a public launch on `joblayer.de
 - Create a new private repository named `joblayer`.
 - Push the local project to that repository.
 - Confirm `.env.local`, `.next`, and `node_modules` are not committed.
-- Confirm `.env.example`, `README.md`, and `supabase/migrations/001_initial_schema.sql` are committed.
+- Confirm `.env.example`, `README.md`, and all files in `supabase/migrations` are committed.
 
 Suggested first commit message:
 
@@ -19,7 +19,7 @@ Initial JobLayer MVP
 ## 2. Supabase
 
 - Create a new Supabase project.
-- Run `supabase/migrations/001_initial_schema.sql` in the SQL Editor.
+- Run every SQL file in `supabase/migrations` in numeric order in the SQL Editor.
 - Create the first admin user under Authentication.
 - Copy these values:
   - Project URL
