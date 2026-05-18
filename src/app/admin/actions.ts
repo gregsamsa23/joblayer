@@ -57,6 +57,7 @@ export async function updateJobStatus(formData: FormData) {
 
 export async function importPreviewJob(formData: FormData) {
   const id = String(formData.get("id") ?? "");
+  const next = String(formData.get("next") ?? "");
   const record = getImportPreviewRecord(id);
   const job = record?.job ?? null;
   const supabase = createSupabaseAdminClient();
@@ -74,6 +75,9 @@ export async function importPreviewJob(formData: FormData) {
 
   if (existingByApplyUrl) {
     revalidatePath("/admin");
+    if (next === "edit") {
+      redirect(`/admin/jobs/${existingByApplyUrl.id}/edit`);
+    }
     return;
   }
 
@@ -86,6 +90,9 @@ export async function importPreviewJob(formData: FormData) {
 
   if (existingBySourceUrl) {
     revalidatePath("/admin");
+    if (next === "edit") {
+      redirect(`/admin/jobs/${existingBySourceUrl.id}/edit`);
+    }
     return;
   }
 
@@ -110,7 +117,7 @@ export async function importPreviewJob(formData: FormData) {
       .join("\n"),
   };
 
-  const { error } = await supabase.from("jobs").insert(pendingJob);
+  const { data, error } = await supabase.from("jobs").insert(pendingJob).select("id").single();
 
   if (error) {
     redirect(`/admin?error=${encodeURIComponent(error.message)}`);
@@ -118,6 +125,10 @@ export async function importPreviewJob(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/jobs");
+
+  if (next === "edit" && data?.id) {
+    redirect(`/admin/jobs/${data.id}/edit`);
+  }
 }
 
 export async function updateJobDetails(formData: FormData) {

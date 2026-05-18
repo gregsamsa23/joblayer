@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { formatPostedDate, formatSalary, jobLocation, roleLabel, seniorityLabel } from "@/lib/format";
 import { hasSupabaseConfig } from "@/lib/env";
-import { jobImportPreview, type ImportPreviewRecord } from "@/lib/import-preview";
+import { jobImportPreview, type ImportPreview, type ImportPreviewRecord } from "@/lib/import-preview";
 import { getAdminJobs } from "@/lib/jobs";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { JobStatus } from "@/lib/taxonomy";
@@ -24,10 +24,25 @@ const statuses: { value: JobStatus | "all"; label: string }[] = [
   { value: "draft", label: "Draft" },
 ];
 
+type ImportView = "new" | "all" | "imported" | "review";
+
+type EnrichedImportRecord = ImportPreviewRecord & {
+  alreadyImported: boolean;
+  existingJob?: Job;
+  qualityScore: number;
+  hasQualityWarnings: boolean;
+};
+
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { status?: JobStatus | "all"; error?: string };
+  searchParams: {
+    status?: JobStatus | "all";
+    error?: string;
+    importView?: ImportView;
+    importSource?: string;
+    importConfidence?: ImportPreviewRecord["confidence"] | "all";
+  };
 }) {
   const supabaseConfigured = hasSupabaseConfig();
 
@@ -46,12 +61,30 @@ export default async function AdminPage({
   const activeStatus = searchParams.status ?? "all";
   const filteredJobs = activeStatus === "all" ? jobs : jobs.filter((job) => job.status === activeStatus);
   const counts = countByStatus(jobs);
-  const existingApplyUrls = new Set(jobs.map((job) => job.apply_url));
-  const existingSourceUrls = new Set(jobs.map((job) => job.source_url).filter(Boolean));
+  const existingApplyUrls = new Map(jobs.map((job) => [job.apply_url, job]));
+  const existingSourceUrls = new Map(jobs.filter((job) => job.source_url).map((job) => [job.source_url!, job]));
   const importJobs = jobImportPreview.jobs;
-  const importedCount = supabaseConfigured
-    ? importJobs.filter((record) => existingApplyUrls.has(record.apply_url) || existingSourceUrls.has(record.apply_url)).length
-    : 0;
+  const importView = searchParams.importView ?? "new";
+  const importSource = searchParams.importSource ?? "all";
+  const importConfidence = searchParams.importConfidence ?? "all";
+  const importRecords = importJobs.map((record) =>
+    enrichImportRecord(record, existingApplyUrls.get(record.apply_url) ?? existingSourceUrls.get(record.apply_url)),
+  );
+  const importedCount = supabaseConfigured ? importRecords.filter((record) => record.alreadyImported).length : 0;
+  const newCount = supabaseConfigured ? importRecords.filter((record) => !record.alreadyImported).length : importRecords.length;
+  const lowConfidenceCount = importRecords.filter((record) => record.confidence === "low" || record.hasQualityWarnings).length;
+  const importSources = Array.from(new Set(importRecords.map((record) => record.source_company))).sort();
+  const filteredImportRecords = importRecords.filter((record) => {
+    const viewMatches =
+      importView === "all" ||
+      (importView === "new" && !record.alreadyImported) ||
+      (importView === "imported" && record.alreadyImported) ||
+      (importView === "review" && (record.confidence === "low" || record.hasQualityWarnings));
+    const sourceMatches = importSource === "all" || record.source_company === importSource;
+    const confidenceMatches = importConfidence === "all" || record.confidence === importConfidence;
+
+    return viewMatches && sourceMatches && confidenceMatches;
+  });
 
   return (
     <PageShell>
@@ -112,26 +145,79 @@ export default async function AdminPage({
                 External roles are kept as source-linked previews first. Import promising roles into moderation, then approve only after editorial review.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
               <MiniMetric label="Found" value={importJobs.length} />
-              <MiniMetric label="Queued" value={importedCount} />
+              <MiniMetric label="New" value={newCount} />
+              <MiniMetric label="Imported" value={importedCount} />
+              <MiniMetric label="Review" value={lowConfidenceCount} />
               <MiniMetric label="Sources" value={jobImportPreview.source_reports.length} />
             </div>
           </div>
 
+          <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_320px]">
+            <div>
+              <div className="flex flex-wrap gap-2">
+                <ImportFilterLink label="New" href={buildAdminHref(searchParams, { importView: "new" })} active={importView === "new"} />
+                <ImportFilterLink label="All" href={buildAdminHref(searchParams, { importView: "all" })} active={importView === "all"} />
+                <ImportFilterLink
+                  label="Imported"
+                  href={buildAdminHref(searchParams, { importView: "imported" })}
+                  active={importView === "imported"}
+                />
+                <ImportFilterLink
+                  label="Needs review"
+                  href={buildAdminHref(searchParams, { importView: "review" })}
+                  active={importView === "review"}
+                />
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <ImportFilterLink
+                  label="All sources"
+                  href={buildAdminHref(searchParams, { importSource: "all" })}
+                  active={importSource === "all"}
+                  compact
+                />
+                {importSources.map((source) => (
+                  <ImportFilterLink
+                    key={source}
+                    label={source}
+                    href={buildAdminHref(searchParams, { importSource: source })}
+                    active={importSource === source}
+                    compact
+                  />
+                ))}
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(["all", "high", "medium", "low"] as const).map((confidence) => (
+                  <ImportFilterLink
+                    key={confidence}
+                    label={confidence === "all" ? "All confidence" : `${confidence} confidence`}
+                    href={buildAdminHref(searchParams, { importConfidence: confidence })}
+                    active={importConfidence === confidence}
+                    compact
+                  />
+                ))}
+              </div>
+            </div>
+
+            <SourceHealthPanel reports={jobImportPreview.source_reports} />
+          </div>
+
           <div className="mt-5 grid gap-3 lg:grid-cols-2">
-            {importJobs.length ? (
-              importJobs.map((record) => (
+            {filteredImportRecords.length ? (
+              filteredImportRecords.map((record) => (
                 <ImportPreviewCard
                   key={record.job.id}
                   record={record}
-                  alreadyImported={supabaseConfigured && (existingApplyUrls.has(record.apply_url) || existingSourceUrls.has(record.apply_url))}
                   actionsEnabled={supabaseConfigured}
                 />
               ))
             ) : (
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-sm text-slate-400">
-                No import preview jobs yet. Run <span className="font-semibold text-slate-200">npm run import:dax-jobs</span> locally.
+                No import preview jobs match these filters. Adjust the import view or run{" "}
+                <span className="font-semibold text-slate-200">npm run import:dax-jobs</span> locally.
               </div>
             )}
           </div>
@@ -178,16 +264,85 @@ function MiniMetric({ label, value }: { label: string; value: number }) {
   );
 }
 
+function ImportFilterLink({
+  label,
+  href,
+  active,
+  compact = false,
+}: {
+  label: string;
+  href: string;
+  active: boolean;
+  compact?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={[
+        "rounded-2xl border font-semibold transition",
+        compact ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm",
+        active
+          ? "border-cyan-300/40 bg-cyan-300/15 text-cyan-100"
+          : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-cyan-300/30 hover:text-cyan-100",
+      ].join(" ")}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function SourceHealthPanel({ reports }: { reports: ImportPreview["source_reports"] }) {
+  const ok = reports.filter((report) => report.status === "ok").length;
+  const candidates = reports.reduce((total, report) => total + (report.imported_candidates ?? 0), 0);
+
+  return (
+    <aside className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Source health</p>
+          <p className="mt-1 text-sm text-slate-300">
+            {ok}/{reports.length} sources ok · {candidates} candidates
+          </p>
+        </div>
+        <span className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+          Live feed
+        </span>
+      </div>
+      <div className="mt-4 grid gap-2">
+        {reports.map((report) => (
+          <a
+            key={`${report.company}-${report.source_url}`}
+            href={report.source_url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/10 px-3 py-2 text-xs transition hover:border-cyan-300/30"
+          >
+            <span className="truncate font-semibold text-slate-200">{report.company}</span>
+            <span className={report.status === "ok" ? "text-emerald-200" : "text-red-200"}>
+              {report.status === "ok" ? `${report.imported_candidates ?? 0} found` : "failed"}
+            </span>
+          </a>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 function ImportPreviewCard({
   record,
-  alreadyImported,
   actionsEnabled,
 }: {
-  record: ImportPreviewRecord;
-  alreadyImported: boolean;
+  record: EnrichedImportRecord;
   actionsEnabled: boolean;
 }) {
   const job = record.job;
+  const alreadyImported = actionsEnabled && record.alreadyImported;
+  const qualityTone =
+    record.qualityScore >= 80
+      ? "text-emerald-100 bg-emerald-400/10 border-emerald-300/20"
+      : record.qualityScore >= 55
+        ? "text-amber-100 bg-amber-400/10 border-amber-300/20"
+        : "text-red-100 bg-red-400/10 border-red-300/20";
 
   return (
     <article className="rounded-2xl border border-white/10 bg-white/[0.045] p-5 transition hover:border-cyan-300/30 hover:bg-white/[0.07]">
@@ -200,9 +355,17 @@ function ImportPreviewCard({
             <span className="rounded-full bg-violet-400/10 px-3 py-1 text-xs font-semibold uppercase text-violet-100">
               {record.confidence} confidence
             </span>
+            <span className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase ${qualityTone}`}>
+              {record.qualityScore}/100 quality
+            </span>
             {alreadyImported ? (
               <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase text-emerald-100">
-                queued
+                imported
+              </span>
+            ) : null}
+            {record.hasQualityWarnings ? (
+              <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-semibold uppercase text-amber-100">
+                check
               </span>
             ) : null}
           </div>
@@ -212,15 +375,35 @@ function ImportPreviewCard({
           </p>
         </div>
 
-        <form action={importPreviewJob} className="shrink-0">
-          <input type="hidden" name="id" value={job.id} />
-          <button
-            disabled={!actionsEnabled || alreadyImported}
-            className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {!actionsEnabled ? "Connect Supabase" : alreadyImported ? "Imported" : "Import"}
-          </button>
-        </form>
+        <div className="flex shrink-0 flex-wrap gap-2 sm:justify-end">
+          {record.existingJob ? (
+            <Link
+              href={`/admin/jobs/${record.existingJob.id}/edit`}
+              className="rounded-xl border border-emerald-300/25 bg-emerald-300/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-300/15"
+            >
+              Edit imported
+            </Link>
+          ) : null}
+          <form action={importPreviewJob}>
+            <input type="hidden" name="id" value={job.id} />
+            <button
+              disabled={!actionsEnabled || alreadyImported}
+              className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {!actionsEnabled ? "Connect Supabase" : alreadyImported ? "Imported" : "Import"}
+            </button>
+          </form>
+          <form action={importPreviewJob}>
+            <input type="hidden" name="id" value={job.id} />
+            <input type="hidden" name="next" value="edit" />
+            <button
+              disabled={!actionsEnabled || alreadyImported}
+              className="rounded-xl border border-violet-300/25 bg-violet-300/10 px-3 py-2 text-sm font-semibold text-violet-100 transition hover:bg-violet-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Import + edit
+            </button>
+          </form>
+        </div>
       </div>
 
       <dl className="mt-4 grid gap-3 text-sm text-slate-400 sm:grid-cols-3">
@@ -228,6 +411,16 @@ function ImportPreviewCard({
         <Detail label="DACH signal" value={record.match_reason.dach_location_detected ? "Yes" : "No"} />
         <Detail label="Recommended" value={record.recommended_status} />
       </dl>
+
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+        <div className="h-full rounded-full bg-gradient-to-r from-violet-400 to-cyan-300" style={{ width: `${record.qualityScore}%` }} />
+      </div>
+
+      {record.hasQualityWarnings ? (
+        <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-400/10 p-3 text-xs leading-5 text-amber-100/90">
+          Review before import: this role has low confidence, non-DACH signals, excluded terms or weak relevance terms.
+        </div>
+      ) : null}
 
       <div className="mt-4 flex flex-wrap gap-2">
         {job.tags.length ? (
@@ -256,6 +449,68 @@ function countByStatus(jobs: Job[]) {
     },
     { draft: 0, pending: 0, live: 0, expired: 0, rejected: 0 },
   );
+}
+
+function enrichImportRecord(record: ImportPreviewRecord, existingJob?: Job): EnrichedImportRecord {
+  const confidenceBase = { high: 78, medium: 58, low: 36 }[record.confidence];
+  const score = Math.max(
+    0,
+    Math.min(
+      100,
+      confidenceBase +
+        Math.min(record.match_reason.relevance_terms * 6, 18) +
+        (record.match_reason.dach_location_detected ? 8 : -18) -
+        (record.match_reason.excluded_terms_detected ? 24 : 0) -
+        (record.match_reason.non_dach_location_detected ? 18 : 0) -
+        (record.job.tags.length ? 0 : 8),
+    ),
+  );
+
+  return {
+    ...record,
+    alreadyImported: Boolean(existingJob),
+    existingJob,
+    qualityScore: score,
+    hasQualityWarnings:
+      score < 55 ||
+      record.confidence === "low" ||
+      record.match_reason.excluded_terms_detected ||
+      Boolean(record.match_reason.non_dach_location_detected) ||
+      record.match_reason.relevance_terms < 1,
+  };
+}
+
+function buildAdminHref(
+  current: {
+    status?: JobStatus | "all";
+    importView?: ImportView;
+    importSource?: string;
+    importConfidence?: ImportPreviewRecord["confidence"] | "all";
+  },
+  updates: {
+    importView?: ImportView;
+    importSource?: string;
+    importConfidence?: ImportPreviewRecord["confidence"] | "all";
+  },
+) {
+  const params = new URLSearchParams();
+  const next = { ...current, ...updates };
+
+  if (next.status && next.status !== "all") {
+    params.set("status", next.status);
+  }
+  if (next.importView && next.importView !== "new") {
+    params.set("importView", next.importView);
+  }
+  if (next.importSource && next.importSource !== "all") {
+    params.set("importSource", next.importSource);
+  }
+  if (next.importConfidence && next.importConfidence !== "all") {
+    params.set("importConfidence", next.importConfidence);
+  }
+
+  const query = params.toString();
+  return query ? `/admin?${query}` : "/admin";
 }
 
 function StatCard({ label, value, tone }: { label: string; value: number; tone: "amber" | "emerald" | "red" | "slate" }) {
