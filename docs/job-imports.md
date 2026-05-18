@@ -31,6 +31,7 @@ Source notes:
 
 - SAP uses SuccessFactors category/list pages.
 - Siemens uses a dedicated adapter: Germany-filtered Siemens search pages are parsed by individual result cards, and selected official JobDetail URLs can be used as stable seed inputs when the Siemens search UI is slow or broad.
+- Bosch uses the public SmartRecruiters postings API for the official `BoschGroup` company feed, filtered by Germany and AI/tech search queries. This is preferred over HTML parsing because the careers site exposes stable posting metadata and application URLs.
 
 For production, add source metadata columns to Supabase before inserting imported jobs:
 

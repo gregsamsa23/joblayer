@@ -133,6 +133,7 @@ export async function importPreviewJob(formData: FormData) {
 
 export async function updateJobDetails(formData: FormData) {
   const id = String(formData.get("id") ?? "");
+  const next = String(formData.get("next") ?? "");
   const supabase = createSupabaseAdminClient();
 
   if (!supabase || !id) {
@@ -143,14 +144,27 @@ export async function updateJobDetails(formData: FormData) {
     const job = parseJobForm(formData);
     const adminNotes = String(formData.get("admin_notes") ?? "").trim();
 
-    const update = {
+    const update =
+      next === "approve"
+        ? {
+            ...job,
+            country: countryForCity(job.location_city),
+            company_logo_url: job.company_logo_url || null,
+            salary_min: job.salary_min || null,
+            salary_max: job.salary_max || null,
+            admin_notes: adminNotes || null,
+            status: "live",
+            published_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+          }
+        : {
       ...job,
       country: countryForCity(job.location_city),
       company_logo_url: job.company_logo_url || null,
       salary_min: job.salary_min || null,
       salary_max: job.salary_max || null,
       admin_notes: adminNotes || null,
-    };
+          };
 
     const { error } = await supabase.from("jobs").update(update).eq("id", id);
 
@@ -165,5 +179,14 @@ export async function updateJobDetails(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/admin/jobs/${id}/edit`);
   revalidatePath("/jobs");
+
+  if (next === "admin") {
+    redirect("/admin");
+  }
+
+  if (next === "approve") {
+    redirect("/admin?status=live");
+  }
+
   redirect(`/admin/jobs/${id}/edit?saved=1`);
 }

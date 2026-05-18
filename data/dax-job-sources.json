@@ -33,9 +33,29 @@
     ],
     "detailUrls": [
       "https://jobs.siemens.com/en_US/externaljobs/JobDetail/479910",
-      "https://jobs.siemens.com/en_US/externaljobs/JobDetail/482140"
+      "https://jobs.siemens.com/en_US/externaljobs/JobDetail/482140",
+      "https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161"
     ],
     "notes": "Official Siemens careers searches. Adapter follows JobDetail links and filters on detail-page metadata."
+  },
+  {
+    "companyName": "Bosch Group",
+    "companyKey": "bosch-ai",
+    "sourceUrl": "https://jobs.bosch.de/de/",
+    "sourceType": "smartrecruiters-api",
+    "companyIdentifier": "BoschGroup",
+    "country": "de",
+    "searchQueries": [
+      "machine learning",
+      "artificial intelligence",
+      "agentic ai",
+      "reinforcement learning",
+      "data scientist",
+      "data engineer",
+      "llm",
+      "cloud engineer"
+    ],
+    "notes": "Official Bosch careers postings via SmartRecruiters public postings API, filtered for Germany and DACH-relevant AI/tech roles."
   },
   {
     "companyName": "Deutsche Telekom",

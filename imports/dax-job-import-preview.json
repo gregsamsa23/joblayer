@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T09:32:36.768Z",
+  "generated_at": "2026-05-18T04:50:31.589Z",
   "guardrails": [
     "Official employer career pages only.",
     "Imported descriptions are placeholders; do not copy full external job text.",
@@ -10,7 +10,7 @@
       "company": "SAP",
       "source_url": "https://jobs.sap.com/go/AI-Jobs/9154301/",
       "status": "ok",
-      "imported_candidates": 6
+      "imported_candidates": 7
     },
     {
       "company": "SAP",
@@ -23,6 +23,12 @@
       "source_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
       "status": "ok",
       "imported_candidates": 1
+    },
+    {
+      "company": "Bosch Group",
+      "source_url": "https://jobs.bosch.de/de/",
+      "status": "ok",
+      "imported_candidates": 8
     },
     {
       "company": "Deutsche Telekom",
@@ -50,7 +56,7 @@
       "source_url": "https://jobs.sap.com/go/AI-Jobs/9154301/",
       "apply_url": "https://jobs.sap.com/job/Walldorf-Cloud-Solution-Architect-%28fmd%29-for-Agentic-AI-Focus-Finance-69190/1370931133/",
       "recommended_status": "pending",
-      "confidence": "high",
+      "confidence": "medium",
       "match_reason": {
         "relevance_terms": 2,
         "dach_location_detected": true,
@@ -59,7 +65,7 @@
       },
       "job": {
         "id": "import-uo1ne2",
-        "created_at": "2026-05-17T09:31:54.003Z",
+        "created_at": "2026-05-18T04:49:50.877Z",
         "slug": "cloud-solution-architect-f-m-d-for-agentic-ai-focus-finance-sap-uo1ne2",
         "status": "pending",
         "title": "Cloud Solution Architect (f/m/d) for Agentic AI - Focus Finance",
@@ -89,6 +95,45 @@
       "source_company": "SAP",
       "source_key": "sap",
       "source_url": "https://jobs.sap.com/go/AI-Jobs/9154301/",
+      "apply_url": "https://jobs.sap.com/job/Walldorf-Senior-BTP-AI-Expert-Consultant-%28fmd%29-69190/1365850933/",
+      "recommended_status": "pending",
+      "confidence": "medium",
+      "match_reason": {
+        "relevance_terms": 1,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-p6dyy9",
+        "created_at": "2026-05-18T04:49:50.879Z",
+        "slug": "senior-btp-ai-expert-consultant-f-m-d-sap-p6dyy9",
+        "status": "pending",
+        "title": "Senior BTP AI Expert Consultant (f/m/d)",
+        "company_name": "SAP",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "onsite",
+        "employment_type": "full-time",
+        "role_type": "ai-engineer",
+        "seniority": "senior",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von SAP erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.sap.com/job/Walldorf-Senior-BTP-AI-Expert-Consultant-%28fmd%29-69190/1365850933/",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from SAP. Source: https://jobs.sap.com/job/Walldorf-Senior-BTP-AI-Expert-Consultant-%28fmd%29-69190/1365850933/"
+      }
+    },
+    {
+      "source_company": "SAP",
+      "source_key": "sap",
+      "source_url": "https://jobs.sap.com/go/AI-Jobs/9154301/",
       "apply_url": "https://jobs.sap.com/job/Vienna-SAP-AI-Engineering-Architect-%28fmd%29-1021/1375267733/",
       "recommended_status": "pending",
       "confidence": "medium",
@@ -100,7 +145,7 @@
       },
       "job": {
         "id": "import-ci2j1z",
-        "created_at": "2026-05-17T09:31:54.005Z",
+        "created_at": "2026-05-18T04:49:50.880Z",
         "slug": "sap-ai-engineering-architect-f-m-d-sap-ci2j1z",
         "status": "pending",
         "title": "SAP AI Engineering Architect (f/m/d)",
@@ -139,7 +184,7 @@
       },
       "job": {
         "id": "import-c42fb6",
-        "created_at": "2026-05-17T09:31:54.005Z",
+        "created_at": "2026-05-18T04:49:50.880Z",
         "slug": "principal-btp-ai-development-consultant-f-m-d-sap-c42fb6",
         "status": "pending",
         "title": "Principal BTP AI Development Consultant (f/m/d)",
@@ -178,7 +223,7 @@
       },
       "job": {
         "id": "import-2eu5rd",
-        "created_at": "2026-05-17T09:31:54.005Z",
+        "created_at": "2026-05-18T04:49:50.880Z",
         "slug": "principal-lead-sap-ai-architect-f-m-d-sap-2eu5rd",
         "status": "pending",
         "title": "Principal/Lead SAP AI Architect (f/m/d)",
@@ -217,7 +262,7 @@
       },
       "job": {
         "id": "import-z88elw",
-        "created_at": "2026-05-17T09:31:54.005Z",
+        "created_at": "2026-05-18T04:49:50.880Z",
         "slug": "principal-lead-sap-ai-engineer-f-m-d-sap-z88elw",
         "status": "pending",
         "title": "Principal/Lead SAP AI Engineer (f/m/d)",
@@ -256,7 +301,7 @@
       },
       "job": {
         "id": "import-pkh7pe",
-        "created_at": "2026-05-17T09:31:54.005Z",
+        "created_at": "2026-05-18T04:49:50.880Z",
         "slug": "principal-software-architect-m-f-d-sap-knowledge-graph-sap-pkh7pe",
         "status": "pending",
         "title": "Principal Software Architect (m/f/d) | SAP Knowledge Graph",
@@ -286,7 +331,7 @@
       "source_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs?keyword=Artificial%20Intelligence",
       "apply_url": "https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161",
       "recommended_status": "pending",
-      "confidence": "high",
+      "confidence": "medium",
       "match_reason": {
         "relevance_terms": 2,
         "dach_location_detected": true,
@@ -295,10 +340,10 @@
       },
       "job": {
         "id": "import-1eyypbk",
-        "created_at": "2026-05-17T09:32:36.190Z",
-        "slug": "senior-power-automation-expert-f-m-d-for-ai-enabled-engineering-siemens-1eyypbk",
+        "created_at": "2026-05-18T04:50:25.842Z",
+        "slug": "siemens-role-506161-siemens-1eyypbk",
         "status": "pending",
-        "title": "Senior Power Automation Expert (f/m/d) for AI-enabled Engineering",
+        "title": "Siemens role 506161",
         "company_name": "Siemens",
         "company_logo_url": null,
         "location_city": "munich",
@@ -319,6 +364,309 @@
         "published_at": null,
         "expires_at": null,
         "admin_notes": "Import preview from Siemens. Source: https://jobs.siemens.com/de_DE/externaljobs/JobDetail/506161"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122201077-research-scientist-agentic-ai-reinforcement-learning-and-neuro-symbolic-systems-f-m-div-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "high",
+      "match_reason": {
+        "relevance_terms": 6,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-1iqrcz9",
+        "created_at": "2026-05-18T04:50:31.137Z",
+        "slug": "research-scientist-agentic-ai-reinforcement-learning-and-neuro-symbolic-systems-f-m-div-bo",
+        "status": "pending",
+        "title": "Research Scientist Agentic AI, Reinforcement Learning and Neuro-Symbolic Systems (f/m/div.)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "part-time",
+        "role_type": "machine-learning",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122201077-research-scientist-agentic-ai-reinforcement-learning-and-neuro-symbolic-systems-f-m-div-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "Python",
+          "NLP",
+          "Computer Vision",
+          "Product"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000122201077-research-scientist-agentic-ai-reinforcement-learning-and-neuro-symbolic-systems-f-m-div-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122207067-research-engineer-training-large-behavior-models-with-reinforcement-learning-eg16-f-m-div-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "high",
+      "match_reason": {
+        "relevance_terms": 5,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-3lk036",
+        "created_at": "2026-05-18T04:50:31.141Z",
+        "slug": "research-engineer-training-large-behavior-models-with-reinforcement-learning-eg16-f-m-div-",
+        "status": "pending",
+        "title": "Research Engineer - Training Large Behavior Models with Reinforcement Learning (EG16, f/m/div.)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "part-time",
+        "role_type": "machine-learning",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122207067-research-engineer-training-large-behavior-models-with-reinforcement-learning-eg16-f-m-div-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "Python",
+          "LLM",
+          "RAG",
+          "Computer Vision",
+          "Cloud"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000122207067-research-engineer-training-large-behavior-models-with-reinforcement-learning-eg16-f-m-div-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000123382151-phd-cross-domain-hyperspectral-anomaly-detection-for-manufacturing-f-m-div-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "high",
+      "match_reason": {
+        "relevance_terms": 4,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-jrse4t",
+        "created_at": "2026-05-18T04:50:31.142Z",
+        "slug": "phd-cross-domain-hyperspectral-anomaly-detection-for-manufacturing-f-m-div-bosch-group-jrs",
+        "status": "pending",
+        "title": "PhD - Cross-Domain Hyperspectral Anomaly Detection for Manufacturing (f/m/div.)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "contract",
+        "role_type": "machine-learning",
+        "seniority": "junior",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000123382151-phd-cross-domain-hyperspectral-anomaly-detection-for-manufacturing-f-m-div-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "Python",
+          "RAG",
+          "Computer Vision",
+          "Product"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000123382151-phd-cross-domain-hyperspectral-anomaly-detection-for-manufacturing-f-m-div-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122198540-research-engineer-reinforcement-learning-and-agentic-ai-f-m-div-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "high",
+      "match_reason": {
+        "relevance_terms": 4,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-xnzfs8",
+        "created_at": "2026-05-18T04:50:31.144Z",
+        "slug": "research-engineer-reinforcement-learning-and-agentic-ai-f-m-div-bosch-group-xnzfs8",
+        "status": "pending",
+        "title": "Research Engineer - Reinforcement Learning and Agentic AI (f/m/div.)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "part-time",
+        "role_type": "machine-learning",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000122198540-research-engineer-reinforcement-learning-and-agentic-ai-f-m-div-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "Python",
+          "Computer Vision",
+          "Product"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000122198540-research-engineer-reinforcement-learning-and-agentic-ai-f-m-div-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000125034650-project-leader-innovation-and-new-technologies-at-bosch-management-consulting-f-m-div-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "medium",
+      "match_reason": {
+        "relevance_terms": 2,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-1m5g6ht",
+        "created_at": "2026-05-18T04:50:31.146Z",
+        "slug": "project-leader-innovation-and-new-technologies-at-bosch-management-consulting-f-m-div-bosc",
+        "status": "pending",
+        "title": "Project Leader Innovation and New Technologies at Bosch Management Consulting (f/m/div.)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "part-time",
+        "role_type": "ai-engineer",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000125034650-project-leader-innovation-and-new-technologies-at-bosch-management-consulting-f-m-div-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "LLM",
+          "Computer Vision",
+          "Product"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000125034650-project-leader-innovation-and-new-technologies-at-bosch-management-consulting-f-m-div-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000125285587-global-reporting-system-developer-m-w-d-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "medium",
+      "match_reason": {
+        "relevance_terms": 2,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-khffov",
+        "created_at": "2026-05-18T04:50:31.147Z",
+        "slug": "global-reporting-system-developer-m-w-d-bosch-group-khffov",
+        "status": "pending",
+        "title": "Global Reporting System Developer (m/w/d)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "berlin",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "contract",
+        "role_type": "ai-engineer",
+        "seniority": "senior",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000125285587-global-reporting-system-developer-m-w-d-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "Python",
+          "Computer Vision"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000125285587-global-reporting-system-developer-m-w-d-?oga=true"
+      }
+    },
+    {
+      "source_company": "Bosch Group",
+      "source_key": "bosch-ai",
+      "source_url": "https://jobs.bosch.de/de/",
+      "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000126310569-promotion-impact-of-ai-aas-driven-approaches-within-engineering-operation-of-fluid-factory-f-m-d-?oga=true",
+      "recommended_status": "pending",
+      "confidence": "medium",
+      "match_reason": {
+        "relevance_terms": 1,
+        "dach_location_detected": true,
+        "excluded_terms_detected": false,
+        "non_dach_location_detected": false
+      },
+      "job": {
+        "id": "import-1aruo04",
+        "created_at": "2026-05-18T04:50:31.148Z",
+        "slug": "promotion-impact-of-ai-aas-driven-approaches-within-engineering-operation-of-fluid-factory",
+        "status": "pending",
+        "title": "Promotion | Impact of AI- & AAS-Driven approaches within engineering & operation of fluid factory (f/m/d)",
+        "company_name": "Bosch Group",
+        "company_logo_url": null,
+        "location_city": "remote-dach",
+        "country": "DE",
+        "work_mode": "hybrid",
+        "employment_type": "part-time",
+        "role_type": "data-engineering",
+        "seniority": "lead",
+        "description_markdown": "Diese Rolle wurde als Import-Preview aus der offiziellen Karriereseite von Bosch Group erkannt.\n\nDie vollstaendige Stellenbeschreibung bleibt beim Arbeitgeber. Bitte vor einer Veroeffentlichung redaktionell pruefen und bei Bedarf eine eigene kurze Zusammenfassung verfassen.",
+        "apply_url": "https://jobs.smartrecruiters.com/BoschGroup/744000126310569-promotion-impact-of-ai-aas-driven-approaches-within-engineering-operation-of-fluid-factory-f-m-d-?oga=true",
+        "contact_email": "import-preview@joblayer.de",
+        "salary_min": null,
+        "salary_max": null,
+        "salary_currency": "EUR",
+        "tags": [
+          "RAG",
+          "Computer Vision"
+        ],
+        "published_at": null,
+        "expires_at": null,
+        "admin_notes": "Import preview from Bosch Group. Source: https://jobs.smartrecruiters.com/BoschGroup/744000126310569-promotion-impact-of-ai-aas-driven-approaches-within-engineering-operation-of-fluid-factory-f-m-d-?oga=true"
       }
     }
   ]

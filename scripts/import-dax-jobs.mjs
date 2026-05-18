@@ -115,6 +115,13 @@ const cityPatterns = [
       "karlsruhe",
       "leipzig",
       "stuttgart",
+      "renningen",
+      "gerlingen",
+      "hildesheim",
+      "ulm",
+      "bamberg",
+      "reutlingen",
+      "abstatt",
     ],
   },
 ];
@@ -291,8 +298,99 @@ async function getCandidatesForSource(source) {
     return getSiemensCandidates(source);
   }
 
+  if (source.sourceType === "smartrecruiters-api") {
+    return getSmartRecruitersCandidates(source);
+  }
+
   const html = await fetchSource(source.sourceUrl);
   return extractAnchorCandidates(html, source);
+}
+
+async function getSmartRecruitersCandidates(source) {
+  const companyIdentifier = source.companyIdentifier;
+  const searchQueries = source.searchQueries?.length ? source.searchQueries : ["artificial intelligence"];
+  const country = source.country ?? "de";
+  const listCandidates = [];
+
+  if (!companyIdentifier) {
+    throw new Error("SmartRecruiters source requires companyIdentifier.");
+  }
+
+  for (const query of searchQueries) {
+    const apiUrl = new URL(`https://api.smartrecruiters.com/v1/companies/${companyIdentifier}/postings`);
+    apiUrl.searchParams.set("q", query);
+    apiUrl.searchParams.set("limit", String(Math.max(maxJobsPerSource * 3, 20)));
+    apiUrl.searchParams.set("country", country);
+
+    const payload = await fetchJson(apiUrl.toString());
+    for (const posting of payload.content ?? []) {
+      listCandidates.push({
+        title: posting.name,
+        url: posting.applyUrl ?? posting.postingUrl ?? posting.ref,
+        detailUrl: posting.ref,
+        context: smartRecruitersPostingContext(posting),
+      });
+    }
+  }
+
+  const detailCandidates = [];
+  for (const candidate of dedupeCandidates(listCandidates).slice(0, Math.max(maxJobsPerSource * 4, 24))) {
+    if (!candidate.detailUrl) {
+      detailCandidates.push(candidate);
+      continue;
+    }
+
+    try {
+      const detail = await fetchJson(candidate.detailUrl);
+      detailCandidates.push({
+        title: detail.name ?? candidate.title,
+        url: detail.applyUrl ?? detail.postingUrl ?? candidate.url,
+        context: smartRecruitersPostingContext(detail),
+      });
+    } catch {
+      detailCandidates.push(candidate);
+    }
+  }
+
+  return detailCandidates;
+}
+
+function smartRecruitersPostingContext(posting) {
+  const location = posting.location ?? {};
+  const sections = posting.jobAd?.sections ?? {};
+  const customFields = (posting.customField ?? [])
+    .map((field) => `${field.fieldLabel ?? ""}: ${field.valueLabel ?? ""}`)
+    .join(" ");
+  const sectionText = [
+    sections.jobDescription?.text,
+    sections.qualifications?.text,
+    sections.additionalInformation?.text,
+    sections.companyDescription?.text,
+  ]
+    .filter(Boolean)
+    .map(stripTags)
+    .join(" ");
+  const mode = [location.remote ? "remote" : "", location.hybrid ? "hybrid" : ""].filter(Boolean).join(" ");
+
+  return normalizeWhitespace(
+    [
+      posting.name,
+      posting.refNumber,
+      posting.typeOfEmployment?.label,
+      posting.experienceLevel?.label,
+      posting.function?.label,
+      posting.industry?.label,
+      location.fullLocation,
+      location.city,
+      location.region,
+      location.country,
+      mode,
+      customFields,
+      sectionText,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
 }
 
 async function getSiemensCandidates(source) {
@@ -451,6 +549,32 @@ async function fetchSource(source) {
   }
 }
 
+async function fetchJson(url) {
+  for (let attempt = 1; attempt <= requestRetries; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "accept": "application/json",
+          "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+          "user-agent": "JobLayerImportPreview/0.1 (+https://joblayer.de; editorial preview)",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (attempt === requestRetries) {
+        throw error;
+      }
+
+      await sleep(750 * attempt);
+    }
+  }
+}
+
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -503,7 +627,7 @@ function toPreviewRecord(candidate, source) {
     source_url: source.sourceUrl,
     apply_url: candidate.url,
     recommended_status: "pending",
-    confidence: score.score >= 4 ? "high" : "medium",
+    confidence: score.score >= 5 ? "high" : score.score >= 3 ? "medium" : "low",
     match_reason: {
       relevance_terms: score.relevance,
       dach_location_detected: score.dach,
@@ -573,8 +697,14 @@ async function run() {
 
 function dedupePreviewRecords(records) {
   const byApplyUrl = new Map();
+  const seenTitleKeys = new Set();
   for (const record of records) {
     if (byApplyUrl.has(record.apply_url)) continue;
+    const titleKey = `${record.source_company}:${record.job.title}:${record.job.location_city}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
+    if (seenTitleKeys.has(titleKey)) continue;
+    seenTitleKeys.add(titleKey);
     byApplyUrl.set(record.apply_url, record);
   }
   return [...byApplyUrl.values()];

@@ -47,6 +47,32 @@ export default async function AdminJobEditPage({
     notFound();
   }
 
+  const isImported = Boolean(job.source_company || job.source_url);
+  const hasPlaceholderDescription = job.description_markdown.toLowerCase().includes("import-preview");
+  const reviewItems = [
+    {
+      label: "Title",
+      done: job.title.length >= 12 && !/^import-/i.test(job.title),
+      hint: "Clear, specific and candidate-facing.",
+    },
+    {
+      label: "Location",
+      done: Boolean(job.location_city && job.work_mode),
+      hint: "City and work mode match the source role.",
+    },
+    {
+      label: "Tags",
+      done: job.tags.length >= 2,
+      hint: "At least two useful search tags.",
+    },
+    {
+      label: "Description",
+      done: job.description_markdown.length >= 220 && !hasPlaceholderDescription,
+      hint: "Replace import placeholder with a short editorial summary.",
+    },
+  ];
+  const completedReviewItems = reviewItems.filter((item) => item.done).length;
+
   return (
     <PageShell>
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -77,6 +103,50 @@ export default async function AdminJobEditPage({
             </dl>
           </aside>
         </div>
+
+        {isImported ? (
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_360px]">
+            <div className="rounded-[2rem] border border-cyan-300/15 bg-cyan-400/[0.06] p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-cyan-200">Imported role review</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-white">
+                    {completedReviewItems}/{reviewItems.length} review checks ready
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                    Imported jobs should be normalized before approval. Use the source link, tighten taxonomy and replace the import placeholder with your own short summary.
+                  </p>
+                </div>
+                {job.source_url ? (
+                  <a
+                    href={job.source_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-300/15"
+                  >
+                    Open source
+                  </a>
+                ) : null}
+              </div>
+
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {reviewItems.map((item) => (
+                  <ReviewItem key={item.label} label={item.label} done={item.done} hint={item.hint} />
+                ))}
+              </div>
+            </div>
+
+            <aside className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Import facts</p>
+              <dl className="mt-4 grid gap-3 text-sm">
+                <Fact label="Source company" value={job.source_company ?? "External source"} />
+                {job.source_external_id ? <Fact label="External ID" value={job.source_external_id} /> : null}
+                {job.imported_at ? <Fact label="Imported" value={formatPostedDate(job.imported_at)} /> : null}
+                {job.source_url ? <Fact label="Source URL" value={job.source_url} href={job.source_url} /> : null}
+              </dl>
+            </aside>
+          </div>
+        ) : null}
 
         {!supabaseConfigured ? (
           <div className="mt-6 rounded-2xl border border-amber-300/20 bg-amber-400/10 p-5 text-sm leading-6 text-amber-100">
@@ -170,12 +240,30 @@ export default async function AdminJobEditPage({
             <Link href="/admin" className="text-sm font-semibold text-slate-400 hover:text-white">
               Cancel
             </Link>
-            <button
-              disabled={!supabaseConfigured}
-              className="glow-button rounded-2xl px-6 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Save changes
-            </button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                disabled={!supabaseConfigured}
+                className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Save changes
+              </button>
+              <button
+                name="next"
+                value="admin"
+                disabled={!supabaseConfigured}
+                className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Save + back
+              </button>
+              <button
+                name="next"
+                value="approve"
+                disabled={!supabaseConfigured}
+                className="glow-button rounded-2xl px-6 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Save + approve
+              </button>
+            </div>
           </div>
         </form>
       </section>
@@ -237,6 +325,25 @@ function Select({
 
 function LabelText({ children }: { children: React.ReactNode }) {
   return <span className="text-sm font-semibold text-slate-300">{children}</span>;
+}
+
+function ReviewItem({ label, done, hint }: { label: string; done: boolean; hint: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-semibold text-white">{label}</p>
+        <span
+          className={[
+            "rounded-full px-3 py-1 text-xs font-semibold uppercase",
+            done ? "bg-emerald-400/10 text-emerald-100" : "bg-amber-400/10 text-amber-100",
+          ].join(" ")}
+        >
+          {done ? "ready" : "check"}
+        </span>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-400">{hint}</p>
+    </div>
+  );
 }
 
 function Fact({ label, value, href }: { label: string; value: string; href?: string }) {
