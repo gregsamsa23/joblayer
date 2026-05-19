@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { hasSupabaseConfig } from "@/lib/env";
-import { formatPostedDate, jobLocation, roleLabel, seniorityLabel } from "@/lib/format";
+import { cityLabel, employmentLabel, formatPostedDate, jobLocation, roleLabel, seniorityLabel } from "@/lib/format";
 import { getAdminJobById } from "@/lib/jobs";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -72,6 +72,7 @@ export default async function AdminJobEditPage({
     },
   ];
   const completedReviewItems = reviewItems.filter((item) => item.done).length;
+  const summaryDraft = buildEditorialSummaryDraft(job);
 
   return (
     <PageShell>
@@ -215,6 +216,40 @@ export default async function AdminJobEditPage({
           </div>
 
           <div className="glass-card grid gap-5 rounded-[2rem] p-5">
+            {isImported ? (
+              <div className="rounded-[1.5rem] border border-violet-300/15 bg-violet-400/[0.07] p-4">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-violet-200">Editorial summary helper</p>
+                    <h2 className="mt-2 text-xl font-semibold text-white">JobLayer summary draft</h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                      Use this as a starting point for your own curated description. It is generated from JobLayer metadata, not copied from the employer job text.
+                    </p>
+                  </div>
+                  {hasPlaceholderDescription ? (
+                    <span className="rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold uppercase text-amber-100">
+                      Placeholder active
+                    </span>
+                  ) : (
+                    <span className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold uppercase text-emerald-100">
+                      Custom summary present
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-4 grid gap-4 xl:grid-cols-[1fr_280px]">
+                  <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-2xl border border-white/10 bg-[#050816]/70 p-4 text-sm leading-6 text-slate-200">
+                    {summaryDraft}
+                  </pre>
+                  <div className="grid gap-3 text-sm text-slate-400">
+                    <HelperTip title="Recommended workflow" body="Open the source role, verify the basics, then replace the description field with an edited version of this draft." />
+                    <HelperTip title="Keep it original" body="Do not paste the employer's full job ad. Summarize focus, seniority, location and stack in JobLayer's own wording." />
+                    <HelperTip title="Before approval" body="Make sure title, tags, seniority and work mode match the external role." />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             <label className="grid gap-2">
               <LabelText>Description</LabelText>
               <textarea
@@ -346,6 +381,15 @@ function ReviewItem({ label, done, hint }: { label: string; done: boolean; hint:
   );
 }
 
+function HelperTip({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+      <p className="font-semibold text-slate-200">{title}</p>
+      <p className="mt-1 text-xs leading-5 text-slate-400">{body}</p>
+    </div>
+  );
+}
+
 function Fact({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
     <div>
@@ -361,4 +405,32 @@ function Fact({ label, value, href }: { label: string; value: string; href?: str
       </dd>
     </div>
   );
+}
+
+function buildEditorialSummaryDraft(job: Job) {
+  const role = roleLabel(job.role_type);
+  const seniority = seniorityLabel(job.seniority);
+  const location = cityLabel(job.location_city);
+  const workMode = job.work_mode === "onsite" ? "vor Ort" : job.work_mode;
+  const employment = employmentLabel(job.employment_type);
+  const tags = job.tags.length ? job.tags.join(", ") : "AI/Tech";
+  const source = job.source_company ?? job.company_name;
+
+  return [
+    `## About the role`,
+    `${job.company_name} sucht eine:n ${job.title} mit Fokus auf ${role}. Die Rolle ist fuer ${seniority}-Profile angelegt und richtet sich an Kandidat:innen, die im DACH-Markt an anspruchsvollen AI-, Data- oder Tech-Themen arbeiten moechten.`,
+    "",
+    `## What you'll work on`,
+    `Inhaltlich liegt der Schwerpunkt auf ${tags}. JobLayer hat diese Rolle aus der offiziellen Karriereseite von ${source} kuratiert; die vollstaendige Bewerbung laeuft direkt ueber den Arbeitgeber.`,
+    "",
+    `## Setup`,
+    `Standort: ${location}`,
+    `Arbeitsmodell: ${workMode}`,
+    `Anstellung: ${employment}`,
+    "",
+    `## Why it could be interesting`,
+    `Diese Position kann spannend sein, wenn du eine kuratierte ${role}-Rolle bei einem etablierten DACH-Arbeitgeber suchst und Wert auf einen klaren externen Bewerbungsprozess legst.`,
+    "",
+    `Bitte pruefe vor der Freigabe noch Titel, Standort, Seniority und Tags gegen die Originalquelle.`,
+  ].join("\n");
 }
